@@ -9,6 +9,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 import { logger } from './logger.js';
+import { DEFAULT_PRESETS } from '../constants.js';
 
 /**
  * Get the path to the global Claude CLI settings file
@@ -142,38 +143,6 @@ function isObject(item) {
 // ==========================================
 // Claude CLI Presets
 // ==========================================
-
-/**
- * Default presets based on README examples
- */
-const DEFAULT_PRESETS = [
-    {
-        name: 'Claude Thinking',
-        config: {
-            ANTHROPIC_AUTH_TOKEN: 'test',
-            ANTHROPIC_BASE_URL: 'http://localhost:8080',
-            ANTHROPIC_MODEL: 'claude-opus-4-5-thinking',
-            ANTHROPIC_DEFAULT_OPUS_MODEL: 'claude-opus-4-5-thinking',
-            ANTHROPIC_DEFAULT_SONNET_MODEL: 'claude-sonnet-4-5-thinking',
-            ANTHROPIC_DEFAULT_HAIKU_MODEL: 'gemini-2.5-flash-lite[1m]',
-            CLAUDE_CODE_SUBAGENT_MODEL: 'claude-sonnet-4-5-thinking',
-            ENABLE_EXPERIMENTAL_MCP_CLI: 'true'
-        }
-    },
-    {
-        name: 'Gemini 1M',
-        config: {
-            ANTHROPIC_AUTH_TOKEN: 'test',
-            ANTHROPIC_BASE_URL: 'http://localhost:8080',
-            ANTHROPIC_MODEL: 'gemini-3-pro-high[1m]',
-            ANTHROPIC_DEFAULT_OPUS_MODEL: 'gemini-3-pro-high[1m]',
-            ANTHROPIC_DEFAULT_SONNET_MODEL: 'gemini-3-flash[1m]',
-            ANTHROPIC_DEFAULT_HAIKU_MODEL: 'gemini-2.5-flash-lite[1m]',
-            CLAUDE_CODE_SUBAGENT_MODEL: 'gemini-3-flash[1m]',
-            ENABLE_EXPERIMENTAL_MCP_CLI: 'true'
-        }
-    }
-];
 
 /**
  * Get the path to the presets file
