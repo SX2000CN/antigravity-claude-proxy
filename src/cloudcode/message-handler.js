@@ -55,8 +55,17 @@ export async function sendMessage(anthropicRequest, accountManager, fallbackEnab
                 const minWaitMs = accountManager.getMinWaitTimeMs(model);
                 const resetTime = new Date(Date.now() + minWaitMs).toISOString();
 
-                // If wait time is too long (> 2 minutes), throw error immediately
+                // If wait time is too long (> 2 minutes), try fallback first, then throw error
                 if (minWaitMs > MAX_WAIT_BEFORE_ERROR_MS) {
+                    // Check if fallback is enabled and available
+                    if (fallbackEnabled) {
+                        const fallbackModel = getFallbackModel(model);
+                        if (fallbackModel) {
+                            logger.warn(`[CloudCode] All accounts exhausted for ${model} (${formatDuration(minWaitMs)} wait). Attempting fallback to ${fallbackModel}`);
+                            const fallbackRequest = { ...anthropicRequest, model: fallbackModel };
+                            return await sendMessage(fallbackRequest, accountManager, false);
+                        }
+                    }
                     throw new Error(
                         `RESOURCE_EXHAUSTED: Rate limited on ${model}. Quota will reset after ${formatDuration(minWaitMs)}. Next available: ${resetTime}`
                     );
@@ -70,15 +79,7 @@ export async function sendMessage(anthropicRequest, accountManager, fallbackEnab
                 continue; // Retry the loop
             }
 
-            // Check if fallback is enabled and available
-            if (fallbackEnabled) {
-                const fallbackModel = getFallbackModel(model);
-                if (fallbackModel) {
-                    logger.warn(`[CloudCode] All accounts exhausted for ${model}. Attempting fallback to ${fallbackModel}`);
-                    const fallbackRequest = { ...anthropicRequest, model: fallbackModel };
-                    return await sendMessage(fallbackRequest, accountManager, false);
-                }
-            }
+            // No accounts available and not rate-limited (shouldn't happen normally)
             throw new Error('No accounts available');
         }
 
