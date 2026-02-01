@@ -199,35 +199,36 @@
 
                 <!-- Mode Toggle (Proxy/Paid) -->
                 <div class="card bg-space-900/30 border border-space-border/50 p-5">
-                    <label class="label text-xs uppercase text-gray-500 font-semibold mb-3">Connection Mode</label>
+                    <label class="label text-xs uppercase text-gray-500 font-semibold mb-3"
+                        x-text="$store.global.t('connectionMode')">Connection Mode</label>
                     <div class="flex items-center justify-between">
                         <div class="flex flex-col gap-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-semibold"
                                     :class="currentMode === 'proxy' ? 'text-neon-purple' : 'text-neon-green'">
-                                    <template x-if="currentMode === 'proxy'"><span>🔌 Proxy Mode</span></template>
-                                    <template x-if="currentMode === 'paid'"><span>💳 Paid Mode</span></template>
+                                    <template x-if="currentMode === 'proxy'"><span>🔌 <span x-text="$store.global.t('proxyMode')">Proxy Mode</span></span></template>
+                                    <template x-if="currentMode === 'paid'"><span>💳 <span x-text="$store.global.t('paidMode')">Paid Mode</span></span></template>
                                 </span>
                                 <span x-show="modeLoading"
                                     class="loading loading-spinner loading-xs text-gray-400"></span>
                             </div>
                             <span class="text-[11px] text-gray-500">
-                                <template x-if="currentMode === 'proxy'"><span>Using local proxy server
-                                        (localhost:8080)</span></template>
-                                <template x-if="currentMode === 'paid'"><span>Using official Anthropic API (requires
-                                        subscription)</span></template>
+                                <template x-if="currentMode === 'proxy'"><span x-text="$store.global.t('usingLocalProxy', {port: getProxyPort()})">Using local proxy server</span></template>
+                                <template x-if="currentMode === 'paid'"><span x-text="$store.global.t('usingOfficialApi')">Using official Anthropic API (requires subscription)</span></template>
                             </span>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-xs font-medium"
-                                :class="currentMode === 'proxy' ? 'text-neon-purple' : 'text-gray-500'">Proxy</span>
+                                :class="currentMode === 'proxy' ? 'text-neon-purple' : 'text-gray-500'"
+                                x-text="$store.global.t('proxyMode').split(' ')[0]">Proxy</span>
                             <input type="checkbox" class="toggle toggle-sm"
                                 :class="currentMode === 'paid' ? 'toggle-success' : 'toggle-secondary'"
                                 :checked="currentMode === 'paid'" :disabled="modeLoading"
                                 @change="toggleMode($event.target.checked ? 'paid' : 'proxy')"
                                 aria-label="Toggle between Proxy and Paid mode">
                             <span class="text-xs font-medium"
-                                :class="currentMode === 'paid' ? 'text-neon-green' : 'text-gray-500'">Paid</span>
+                                :class="currentMode === 'paid' ? 'text-neon-green' : 'text-gray-500'"
+                                x-text="$store.global.t('paidMode').split(' ')[0]">Paid</span>
                         </div>
                     </div>
                 </div>
@@ -241,12 +242,9 @@
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div>
-                            <p class="text-sm font-semibold text-neon-green">Claude CLI is using the official Anthropic
-                                API</p>
-                            <p class="text-[11px] text-gray-400 mt-1">All proxy configuration has been removed. Claude
-                                CLI uses your Anthropic subscription directly.</p>
-                            <p class="text-[10px] text-gray-500 mt-2">Switch to Proxy mode to configure model routing
-                                and presets.</p>
+                            <p class="text-sm font-semibold text-neon-green" x-text="$store.global.t('paidModeTitle')">Claude CLI is using the official Anthropic API</p>
+                            <p class="text-[11px] text-gray-400 mt-1" x-text="$store.global.t('paidModeDesc')">All proxy configuration has been removed. Claude CLI uses your Anthropic subscription directly.</p>
+                            <p class="text-[10px] text-gray-500 mt-2" x-text="$store.global.t('paidModeHint')">Switch to Proxy mode to configure model routing and presets.</p>
                         </div>
                     </div>
                 </div>

@@ -16,6 +16,20 @@ window.Components.claudeConfig = () => ({
     currentMode: 'proxy', // 'proxy' or 'paid'
     modeLoading: false,
 
+    /**
+     * Extract port from ANTHROPIC_BASE_URL for display
+     * @returns {string} Port number or '8080' as fallback
+     */
+    getProxyPort() {
+        const baseUrl = this.config?.env?.ANTHROPIC_BASE_URL || '';
+        try {
+            const url = new URL(baseUrl);
+            return url.port || '8080';
+        } catch {
+            return '8080';
+        }
+    },
+
     // Presets state
     presets: [],
     selectedPresetName: '',

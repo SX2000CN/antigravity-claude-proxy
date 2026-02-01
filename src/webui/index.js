@@ -628,7 +628,12 @@ export function mountWebUI(app, dirname, accountManager) {
             const baseUrl = claudeConfig.env?.ANTHROPIC_BASE_URL || '';
 
             // Determine mode based on ANTHROPIC_BASE_URL
-            const isProxy = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
+            const isProxy = baseUrl && (
+                baseUrl.includes('localhost') ||
+                baseUrl.includes('127.0.0.1') ||
+                baseUrl.includes('::1') ||
+                baseUrl.includes('0.0.0.0')
+            );
 
             res.json({
                 status: 'ok',
