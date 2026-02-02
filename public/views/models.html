@@ -98,6 +98,18 @@
                 </svg>
                 <span class="text-[10px] font-medium uppercase tracking-wide" x-text="$store.settings.showHiddenModels ? $store.global.t('hiddenOn') : $store.global.t('hiddenOff')"></span>
             </button>
+
+            <!-- Show All Accounts Toggle (only in detail mode) -->
+            <button x-show="!$store.settings.compact"
+                class="btn h-9 px-4 ml-2 border border-space-border/50 bg-space-800 hover:bg-space-700 hover:border-space-border hover:text-white transition-all gap-2 min-h-0"
+                :class="$store.settings.showAllAccounts ? 'text-neon-purple border-neon-purple/50 bg-neon-purple/10' : 'text-gray-400'"
+                @click="$store.settings.toggle('showAllAccounts')"
+                :title="$store.settings.showAllAccounts ? 'Cap account rows' : 'Show all account rows'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-[10px] font-medium uppercase tracking-wide" x-text="$store.settings.showAllAccounts ? 'All' : 'Capped'"></span>
+            </button>
         </div>
     </div>
 
@@ -256,7 +268,7 @@
                                 <!-- Per-account breakdown (non-compact only) -->
                                 <div x-show="!$store.settings.compact && row.quotaInfo && row.quotaInfo.length > 1"
                                      class="flex flex-col gap-1 mt-1 pt-1 border-t border-space-border/30">
-                                    <template x-for="q in row.quotaInfo" :key="q.fullEmail + '-detail'">
+                                    <template x-for="q in getVisibleAccounts(row)" :key="q.fullEmail + '-detail'">
                                         <div class="flex items-center gap-2">
                                             <span class="text-[10px] font-mono text-gray-500 w-20 truncate text-right flex-shrink-0"
                                                   x-text="q.email"></span>
@@ -273,6 +285,15 @@
                                                   x-text="window.utils.formatTimeUntil(q.resetTime)"></span>
                                         </div>
                                     </template>
+                                    <!-- "+N more" expand button -->
+                                    <button x-show="getHiddenCount(row) > 0"
+                                            @click="toggleExpanded(row.modelId)"
+                                            class="text-[10px] font-mono text-neon-purple/70 hover:text-neon-purple transition-colors text-left pl-[88px] py-0.5 cursor-pointer"
+                                            x-text="'+' + getHiddenCount(row) + ' more'"></button>
+                                    <!-- "Show less" collapse button -->
+                                    <button x-show="isExpanded(row.modelId) && !$store.settings.showAllAccounts && row.quotaInfo.length > window.AppConstants.LIMITS.ACCOUNT_BREAKDOWN_LIMIT"
+                                            @click="toggleExpanded(row.modelId)"
+                                            class="text-[10px] font-mono text-gray-500 hover:text-gray-300 transition-colors text-left pl-[88px] py-0.5 cursor-pointer">Show less</button>
                                 </div>
                             </div>
                         </td>
