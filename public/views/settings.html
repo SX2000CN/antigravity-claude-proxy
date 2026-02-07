@@ -1103,13 +1103,23 @@
                                                         x-text="row.value"></span>
                                                     <!-- Editable input -->
                                                     <div x-show="editingPresetConfig" class="flex items-center gap-1">
-                                                        <input type="number"
-                                                            class="input input-xs bg-space-800 text-white font-mono text-[11px] w-20 text-right"
-                                                            :class="editingConfigErrors[row.key] ? '!border-red-500' : '!border-space-border'"
-                                                            :min="row.min" :max="row.max" :step="row.step"
-                                                            :value="editingConfigDraft[row.key]"
-                                                            @change="validatePresetConfigField(row.key, $event.target.value)"
-                                                            @input="editingConfigDraft[row.key] = Number($event.target.value)">
+                                                        <template x-if="row.type === 'text'">
+                                                            <input type="text"
+                                                                class="input input-xs bg-space-800 text-white font-mono text-[11px] w-32 text-right"
+                                                                :class="editingConfigErrors[row.key] ? '!border-red-500' : '!border-space-border'"
+                                                                :value="editingConfigDraft[row.key]"
+                                                                @change="validatePresetConfigField(row.key, $event.target.value)"
+                                                                @input="editingConfigDraft[row.key] = $event.target.value">
+                                                        </template>
+                                                        <template x-if="row.type !== 'text'">
+                                                            <input type="number"
+                                                                class="input input-xs bg-space-800 text-white font-mono text-[11px] w-20 text-right"
+                                                                :class="editingConfigErrors[row.key] ? '!border-red-500' : '!border-space-border'"
+                                                                :min="row.min" :max="row.max" :step="row.step"
+                                                                :value="editingConfigDraft[row.key]"
+                                                                @change="validatePresetConfigField(row.key, $event.target.value)"
+                                                                @input="editingConfigDraft[row.key] = Number($event.target.value)">
+                                                        </template>
                                                         <span x-show="row.suffix" class="text-[10px] text-gray-600 w-5" x-text="row.suffix"></span>
                                                     </div>
                                                 </div>
@@ -1120,7 +1130,7 @@
                                 <!-- JSON mode content -->
                                 <div x-show="editingPresetConfig && configEditMode === 'json'">
                                     <textarea class="textarea w-full font-mono text-[11px] bg-space-800 border-space-border text-white leading-relaxed"
-                                        rows="14" x-model="editingJsonText" @input="validateJsonText()"></textarea>
+                                        rows="22" x-model="editingJsonText" @input="validateJsonText()"></textarea>
                                     <p x-show="jsonParseError" class="text-[10px] text-red-400 mt-1" x-text="jsonParseError"></p>
                                 </div>
                                 <!-- Save/Cancel buttons -->
