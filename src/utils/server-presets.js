@@ -149,13 +149,23 @@ export async function updateServerPreset(currentName, updates) {
             'maxRetries', 'retryBaseMs', 'retryMaxMs', 'defaultCooldownMs',
             'maxWaitBeforeErrorMs', 'maxAccounts', 'globalQuotaThreshold',
             'rateLimitDedupWindowMs', 'maxConsecutiveFailures', 'extendedCooldownMs',
-            'maxCapacityRetries', 'accountSelection'
+            'maxCapacityRetries', 'switchAccountDelayMs', 'capacityBackoffTiersMs',
+            'accountSelection'
         ];
         const existing = allPresets[index].config || {};
         for (const key of allowedKeys) {
             if (updates.config[key] !== undefined) {
                 if (key === 'accountSelection') {
-                    existing.accountSelection = { ...existing.accountSelection, ...updates.config.accountSelection };
+                    // Deep merge accountSelection sub-objects to preserve fields not in partial update
+                    const existingAS = existing.accountSelection || {};
+                    const updateAS = updates.config.accountSelection;
+                    existing.accountSelection = { ...existingAS };
+                    if (updateAS.strategy !== undefined) existing.accountSelection.strategy = updateAS.strategy;
+                    for (const subKey of ['healthScore', 'tokenBucket', 'quota', 'weights']) {
+                        if (updateAS[subKey] && typeof updateAS[subKey] === 'object') {
+                            existing.accountSelection[subKey] = { ...existingAS[subKey], ...updateAS[subKey] };
+                        }
+                    }
                 } else {
                     existing[key] = updates.config[key];
                 }
