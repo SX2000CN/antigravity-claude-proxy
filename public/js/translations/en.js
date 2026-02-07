@@ -138,6 +138,8 @@ window.translations.en = {
     presetManyAccountsDesc: "Optimized for large account pools (10+). Faster rotation with aggressive retries, shorter cooldowns, and higher quota protection. Maximizes throughput across many accounts.",
     presetConservativeDesc: "Prioritizes reliability over speed. Uses sticky strategy for cache continuity, longer retries/cooldowns, and 20% quota protection. Best when stability matters most.",
     presetDescPlaceholder: "Description (optional)",
+    presetPreviewLabel: "Preview Config",
+    presetPreviewHide: "Hide Preview",
     // Settings - Server
     port: "Port",
     uiVersion: "UI Version",

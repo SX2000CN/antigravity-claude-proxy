@@ -117,6 +117,8 @@ window.translations.pt = {
     presetManyAccountsDesc: "Otimizado para grupos grandes de contas (10+). Rotação mais rápida com tentativas agressivas, cooldowns mais curtos e maior proteção de cota. Maximiza o throughput em muitas contas.",
     presetConservativeDesc: "Prioriza confiabilidade sobre velocidade. Usa estratégia sticky para continuidade de cache, tentativas/cooldowns mais longos e proteção de cota de 20%. Ideal quando a estabilidade é mais importante.",
     presetDescPlaceholder: "Descrição (opcional)",
+    presetPreviewLabel: "Visualizar Config",
+    presetPreviewHide: "Ocultar Visualização",
     // Settings - Server
     port: "Porta",
     uiVersion: "Versão da UI",

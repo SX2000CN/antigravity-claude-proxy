@@ -138,6 +138,8 @@ window.translations.zh = {
     presetManyAccountsDesc: "针对大型账号池（10+）优化。更快的轮换、更积极的重试、更短的冷却时间和更高的配额保护。最大化多账号吞吐量。",
     presetConservativeDesc: "优先考虑稳定性而非速度。使用粘性策略保持缓存连续性，更长的重试/冷却时间和 20% 配额保护。适合稳定性至关重要的场景。",
     presetDescPlaceholder: "描述（可选）",
+    presetPreviewLabel: "预览配置",
+    presetPreviewHide: "隐藏预览",
     // Settings - Server
     port: "端口",
     uiVersion: "UI 版本",

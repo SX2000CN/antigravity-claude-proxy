@@ -159,6 +159,8 @@ window.translations.id = {
     presetManyAccountsDesc: "Dioptimalkan untuk kumpulan akun besar (10+). Rotasi lebih cepat dengan retry agresif, cooldown lebih pendek, dan perlindungan kuota lebih tinggi. Memaksimalkan throughput di banyak akun.",
     presetConservativeDesc: "Mengutamakan keandalan daripada kecepatan. Menggunakan strategi sticky untuk kontinuitas cache, retry/cooldown lebih lama, dan perlindungan kuota 20%. Terbaik saat stabilitas paling penting.",
     presetDescPlaceholder: "Deskripsi (opsional)",
+    presetPreviewLabel: "Pratinjau Konfigurasi",
+    presetPreviewHide: "Sembunyikan Pratinjau",
 
     // Settings - Server
     port: "Port",

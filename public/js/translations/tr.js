@@ -120,6 +120,8 @@ window.translations.tr = {
     presetManyAccountsDesc: "Büyük hesap havuzları (10+) için optimize edilmiştir. Agresif yeniden denemeler, daha kısa bekleme süreleri ve daha yüksek kota koruması ile hızlı rotasyon. Birçok hesapta maksimum verim sağlar.",
     presetConservativeDesc: "Hızdan çok güvenilirliğe öncelik verir. Önbellek sürekliliği için yapışkan strateji, daha uzun yeniden deneme/bekleme süreleri ve %20 kota koruması kullanır. Kararlılığın en önemli olduğu durumlar için idealdir.",
     presetDescPlaceholder: "Açıklama (isteğe bağlı)",
+    presetPreviewLabel: "Yapılandırmayı Önizle",
+    presetPreviewHide: "Önizlemeyi Gizle",
     // Settings - Server
     port: "Port",
     uiVersion: "Arayüz Sürümü",
