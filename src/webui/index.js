@@ -140,7 +140,7 @@ function createAuthMiddleware() {
  */
 function validateConfigFields(input) {
     const updates = {};
-    const { maxRetries, retryBaseMs, retryMaxMs, defaultCooldownMs, maxWaitBeforeErrorMs, maxAccounts, globalQuotaThreshold, accountSelection, rateLimitDedupWindowMs, maxConsecutiveFailures, extendedCooldownMs, maxCapacityRetries } = input;
+    const { maxRetries, retryBaseMs, retryMaxMs, defaultCooldownMs, maxWaitBeforeErrorMs, maxAccounts, globalQuotaThreshold, accountSelection, rateLimitDedupWindowMs, maxConsecutiveFailures, extendedCooldownMs, maxCapacityRetries, switchAccountDelayMs, capacityBackoffTiersMs } = input;
 
     if (typeof maxRetries === 'number' && maxRetries >= 1 && maxRetries <= 20) {
         updates.maxRetries = maxRetries;
@@ -174,6 +174,15 @@ function validateConfigFields(input) {
     }
     if (typeof maxCapacityRetries === 'number' && maxCapacityRetries >= 1 && maxCapacityRetries <= 10) {
         updates.maxCapacityRetries = maxCapacityRetries;
+    }
+    if (typeof switchAccountDelayMs === 'number' && switchAccountDelayMs >= 1000 && switchAccountDelayMs <= 60000) {
+        updates.switchAccountDelayMs = switchAccountDelayMs;
+    }
+    if (Array.isArray(capacityBackoffTiersMs) && capacityBackoffTiersMs.length >= 1 && capacityBackoffTiersMs.length <= 10) {
+        const allValid = capacityBackoffTiersMs.every(v => typeof v === 'number' && v >= 1000 && v <= 300000);
+        if (allValid) {
+            updates.capacityBackoffTiersMs = [...capacityBackoffTiersMs];
+        }
     }
     // Account selection strategy and tuning validation
     if (accountSelection && typeof accountSelection === 'object') {
@@ -216,6 +225,17 @@ function validateConfigFields(input) {
             if (typeof q.criticalThreshold === 'number' && q.criticalThreshold >= 0 && q.criticalThreshold < 1) qUpdate.criticalThreshold = q.criticalThreshold;
             if (typeof q.staleMs === 'number' && q.staleMs >= 30000 && q.staleMs <= 3600000) qUpdate.staleMs = q.staleMs;
             if (Object.keys(qUpdate).length > 0) acctUpdate.quota = qUpdate;
+        }
+
+        // Weights tuning
+        if (accountSelection.weights && typeof accountSelection.weights === 'object') {
+            const w = accountSelection.weights;
+            const wUpdate = {};
+            if (typeof w.health === 'number' && w.health >= 0 && w.health <= 20) wUpdate.health = w.health;
+            if (typeof w.tokens === 'number' && w.tokens >= 0 && w.tokens <= 20) wUpdate.tokens = w.tokens;
+            if (typeof w.quota === 'number' && w.quota >= 0 && w.quota <= 20) wUpdate.quota = w.quota;
+            if (typeof w.lru === 'number' && w.lru >= 0 && w.lru <= 5) wUpdate.lru = w.lru;
+            if (Object.keys(wUpdate).length > 0) acctUpdate.weights = wUpdate;
         }
 
         if (Object.keys(acctUpdate).length > 0) {
