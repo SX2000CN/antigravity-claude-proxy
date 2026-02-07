@@ -163,6 +163,7 @@ window.translations.id = {
     presetPreviewHide: "Sembunyikan Pratinjau",
     editPresetConfig: "Edit Konfigurasi",
     presetConfigSaved: "Konfigurasi preset diperbarui",
+    invalidJson: "JSON tidak valid",
     failedToSavePresetConfig: "Gagal memperbarui konfigurasi preset",
     presetConfigValidationError: "Perbaiki kesalahan validasi sebelum menyimpan",
 

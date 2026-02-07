@@ -142,6 +142,7 @@ window.translations.en = {
     presetPreviewHide: "Hide Preview",
     editPresetConfig: "Edit Config",
     presetConfigSaved: "Preset config updated",
+    invalidJson: "Invalid JSON",
     failedToSavePresetConfig: "Failed to update preset config",
     presetConfigValidationError: "Please fix validation errors before saving",
     // Settings - Server

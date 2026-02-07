@@ -124,6 +124,7 @@ window.translations.tr = {
     presetPreviewHide: "Önizlemeyi Gizle",
     editPresetConfig: "Yapılandırmayı Düzenle",
     presetConfigSaved: "Ön ayar yapılandırması güncellendi",
+    invalidJson: "Geçersiz JSON",
     failedToSavePresetConfig: "Ön ayar yapılandırması güncellenemedi",
     presetConfigValidationError: "Lütfen kaydetmeden önce doğrulama hatalarını düzeltin",
     // Settings - Server

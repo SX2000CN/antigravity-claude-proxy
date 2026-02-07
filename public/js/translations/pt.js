@@ -121,6 +121,7 @@ window.translations.pt = {
     presetPreviewHide: "Ocultar Visualização",
     editPresetConfig: "Editar Config",
     presetConfigSaved: "Configuração do preset atualizada",
+    invalidJson: "JSON inválido",
     failedToSavePresetConfig: "Falha ao atualizar configuração do preset",
     presetConfigValidationError: "Corrija os erros de validação antes de salvar",
     // Settings - Server

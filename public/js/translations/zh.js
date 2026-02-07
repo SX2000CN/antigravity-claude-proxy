@@ -142,6 +142,7 @@ window.translations.zh = {
     presetPreviewHide: "隐藏预览",
     editPresetConfig: "编辑配置",
     presetConfigSaved: "预设配置已更新",
+    invalidJson: "无效的 JSON",
     failedToSavePresetConfig: "更新预设配置失败",
     presetConfigValidationError: "请先修复验证错误再保存",
     // Settings - Server
