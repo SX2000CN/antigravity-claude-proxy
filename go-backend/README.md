@@ -95,7 +95,30 @@ go-backend/
 
 ## 快速开始
 
-### 1. 编译
+### 方式 A: Docker Hub 部署 (推荐)
+
+最简单的部署方式，使用预构建的 Docker 镜像：
+
+```bash
+cd go-backend
+
+# 启动服务 (包含 Redis 和 Proxy)
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f proxy
+
+# 停止服务
+docker-compose down
+```
+
+服务启动后访问 http://localhost:8080 即可使用 WebUI。
+
+**Docker Hub 镜像**: [`sx2000/antigravity-proxy-go:latest`](https://hub.docker.com/r/sx2000/antigravity-proxy-go)
+
+### 方式 B: 从源码编译
+
+如果需要自定义修改，可以从源码编译：
 
 ```bash
 cd go-backend
@@ -110,7 +133,7 @@ go build -ldflags="-s -w" -o build/antigravity-proxy.exe ./cmd/server
 $env:GOOS="linux"; $env:GOARCH="amd64"; go build -ldflags="-s -w" -o build/antigravity-proxy-linux ./cmd/server
 ```
 
-### 2. 运行
+运行：
 
 ```bash
 # 从项目根目录运行（自动检测 public 目录）

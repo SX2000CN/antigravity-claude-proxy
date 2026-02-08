@@ -22,9 +22,7 @@ services:
 
   # Antigravity Proxy Server
   proxy:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: sx2000/antigravity-proxy-go:latest
     container_name: antigravity-proxy
     restart: unless-stopped
     ports:
@@ -37,8 +35,8 @@ services:
     volumes:
       # Mount the frontend assets
       - ../public:/app/public:ro
-      # Mount config directory for persistence
-      - ~/.antigravity-claude-proxy:/home/appuser/.antigravity-claude-proxy
+      # Mount config directory for persistence (Windows path)
+      - ${USERPROFILE}/.config/antigravity-proxy:/home/appuser/.config/antigravity-proxy
     depends_on:
       redis:
         condition: service_healthy

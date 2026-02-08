@@ -205,7 +205,57 @@ nssm remove AntigravityProxy confirm
 
 ## Docker 部署
 
-### Dockerfile
+### 方式 A: 使用 Docker Hub 镜像 (推荐)
+
+最简单的部署方式，使用预构建镜像，无需本地编译：
+
+```bash
+cd go-backend
+
+# 启动服务（自动拉取镜像并启动 Redis + Proxy）
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f proxy
+
+# 停止服务
+docker-compose down
+
+# 更新到最新版本
+docker-compose pull && docker-compose up -d
+```
+
+**Docker Hub 镜像**: [`sx2000/antigravity-proxy-go:latest`](https://hub.docker.com/r/sx2000/antigravity-proxy-go)
+
+#### 配置说明
+
+`docker-compose.yml` 中的关键配置：
+
+```yaml
+services:
+  proxy:
+    image: sx2000/antigravity-proxy-go:latest  # 预构建镜像
+    environment:
+      - REDIS_ADDR=redis:6379
+      - PORT=8080
+    volumes:
+      # 前端静态文件（必需）
+      - ../public:/app/public:ro
+      # 配置文件持久化（Windows）
+      - ${USERPROFILE}/.config/antigravity-proxy:/home/appuser/.config/antigravity-proxy
+```
+
+#### Windows 配置文件位置
+
+配置文件位于 `%USERPROFILE%\.config\antigravity-proxy\`：
+- `config.json` - 服务器配置
+- `accounts.json` - 账户数据
+
+### 方式 B: 本地构建镜像
+
+如果需要自定义修改，可以使用本地 Dockerfile 构建：
+
+#### Dockerfile
 
 ```dockerfile
 # 构建阶段
@@ -236,7 +286,9 @@ ENTRYPOINT ["./antigravity-proxy"]
 CMD ["--strategy=hybrid"]
 ```
 
-### docker-compose.yml
+### docker-compose.yml (本地构建版本)
+
+如果使用本地构建而非 Docker Hub 镜像：
 
 ```yaml
 version: '3.8'
@@ -274,7 +326,7 @@ volumes:
   redis-data:
 ```
 
-### 运行
+### 本地构建运行
 
 ```bash
 # 构建并启动
