@@ -410,4 +410,6 @@ window.translations.zh = {
     placeholderDataDesc: "注入虚拟账户和配额以进行界面测试。",
     includeRealAccounts: "包含真实账户",
     includeRealAccountsDesc: "在占位数据旁显示真实账户。",
+    // 模型下拉菜单
+    clearSelection: "清除选择",
 };

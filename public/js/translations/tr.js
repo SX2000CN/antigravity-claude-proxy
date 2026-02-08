@@ -395,4 +395,6 @@ window.translations.tr = {
     placeholderDataDesc: "UI testi için sahte hesaplar ve kotalar ekle.",
     includeRealAccounts: "Gerçek Hesapları Dahil Et",
     includeRealAccountsDesc: "Yer tutucu verilerle birlikte gerçek hesapları göster.",
+    // Model Açılır Menüsü
+    clearSelection: "Seçimi temizle",
 };

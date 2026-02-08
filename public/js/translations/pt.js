@@ -345,4 +345,6 @@ window.translations.pt = {
     placeholderDataDesc: "Injetar contas e cotas fictícias para testes de interface.",
     includeRealAccounts: "Incluir Contas Reais",
     includeRealAccountsDesc: "Mostrar contas reais junto com dados de teste.",
+    // Dropdown de Modelo
+    clearSelection: "Limpar seleção",
 };

@@ -405,4 +405,6 @@ window.translations.en = {
     placeholderDataDesc: "Inject dummy accounts and quotas for UI testing.",
     includeRealAccounts: "Include Real Accounts",
     includeRealAccountsDesc: "Show real accounts alongside placeholder data.",
+    // Model Dropdown
+    clearSelection: "Clear selection",
 };

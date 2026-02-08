@@ -449,4 +449,6 @@ window.translations.id = {
     placeholderDataDesc: "Masukkan akun dan kuota dummy untuk pengujian UI.",
     includeRealAccounts: "Sertakan Akun Asli",
     includeRealAccountsDesc: "Tampilkan akun asli bersama data placeholder.",
+    // Dropdown Model
+    clearSelection: "Hapus pilihan",
 };
