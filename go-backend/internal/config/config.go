@@ -328,17 +328,47 @@ func (c *Config) Update(updates map[string]interface{}) error {
 			if v, ok := value.(bool); ok {
 				c.DevMode = v
 			}
+		case "logLevel":
+			if v, ok := value.(string); ok {
+				c.LogLevel = v
+			}
+		case "maxRetries":
+			c.MaxRetries = toInt(value)
+		case "retryBaseMs":
+			c.RetryBaseMs = toInt64(value)
+		case "retryMaxMs":
+			c.RetryMaxMs = toInt64(value)
+		case "persistTokenCache":
+			if v, ok := value.(bool); ok {
+				c.PersistTokenCache = v
+			}
+		case "defaultCooldownMs":
+			c.DefaultCooldownMs = toInt64(value)
+		case "maxWaitBeforeErrorMs":
+			c.MaxWaitBeforeErrorMs = toInt64(value)
+		case "maxAccounts":
+			c.MaxAccounts = toInt(value)
 		case "globalQuotaThreshold":
 			if v, ok := value.(float64); ok {
 				c.GlobalQuotaThreshold = v
 			}
-		case "maxAccounts":
-			if v, ok := value.(float64); ok {
-				c.MaxAccounts = int(v)
-			}
+		case "rateLimitDedupWindowMs":
+			c.RateLimitDedupWindowMs = toInt64(value)
+		case "maxConsecutiveFailures":
+			c.MaxConsecutiveFailures = toInt(value)
+		case "extendedCooldownMs":
+			c.ExtendedCooldownMs = toInt64(value)
+		case "maxCapacityRetries":
+			c.MaxCapacityRetries = toInt(value)
 		case "fallbackEnabled":
 			if v, ok := value.(bool); ok {
 				c.FallbackEnabled = v
+			}
+		case "accountSelection":
+			if m, ok := value.(map[string]interface{}); ok {
+				if strategy, ok := m["strategy"].(string); ok {
+					c.AccountSelection.Strategy = strategy
+				}
 			}
 		}
 	}
@@ -423,6 +453,34 @@ func redact(s string) string {
 		return ""
 	}
 	return "********"
+}
+
+// toInt converts interface{} to int, handling both int and float64 types
+func toInt(v interface{}) int {
+	switch val := v.(type) {
+	case int:
+		return val
+	case int64:
+		return int(val)
+	case float64:
+		return int(val)
+	default:
+		return 0
+	}
+}
+
+// toInt64 converts interface{} to int64, handling both int and float64 types
+func toInt64(v interface{}) int64 {
+	switch val := v.(type) {
+	case int:
+		return int64(val)
+	case int64:
+		return val
+	case float64:
+		return int64(val)
+	default:
+		return 0
+	}
 }
 
 // Convenience functions

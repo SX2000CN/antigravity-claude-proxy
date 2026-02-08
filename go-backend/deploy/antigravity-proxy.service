@@ -1,0 +1,87 @@
+# Antigravity Claude Proxy - systemd Service Unit
+#
+# Installation:
+#   1. Copy this file to /etc/systemd/system/antigravity-proxy.service
+#   2. Edit the paths and environment variables as needed
+#   3. Run: sudo systemctl daemon-reload
+#   4. Run: sudo systemctl enable --now antigravity-proxy
+#
+# Commands:
+#   sudo systemctl start antigravity-proxy
+#   sudo systemctl stop antigravity-proxy
+#   sudo systemctl restart antigravity-proxy
+#   sudo systemctl status antigravity-proxy
+#   sudo journalctl -u antigravity-proxy -f
+
+[Unit]
+Description=Antigravity Claude Proxy Server
+Documentation=https://github.com/badri-s2001/antigravity-claude-proxy
+After=network-online.target redis.service
+Wants=network-online.target
+# Uncomment if using Redis
+# Wants=redis.service
+
+[Service]
+Type=simple
+
+# User and group (recommended: create a dedicated user)
+# User=antigravity
+# Group=antigravity
+
+# Working directory (must contain 'public' folder)
+WorkingDirectory=/opt/antigravity-proxy
+
+# Binary path
+ExecStart=/opt/antigravity-proxy/antigravity-proxy --strategy=hybrid
+
+# Restart policy
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# Timeout settings (10 min for long AI responses)
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=antigravity-proxy
+
+# Security hardening (optional but recommended)
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadWritePaths=/opt/antigravity-proxy
+# ReadWritePaths=-/home/antigravity/.config/antigravity-proxy
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# ============================================
+# Environment Variables
+# ============================================
+
+# Server configuration
+Environment=PORT=8080
+Environment=HOST=0.0.0.0
+
+# Redis configuration (optional)
+# Environment=REDIS_ADDR=localhost:6379
+# Environment=REDIS_PASSWORD=your-redis-password
+
+# API security
+# Environment=API_KEY=your-api-key
+# Environment=WEBUI_PASSWORD=your-webui-password
+
+# Logging
+# Environment=DEV_MODE=false
+
+# Model fallback
+# Environment=FALLBACK=false
+
+[Install]
+WantedBy=multi-user.target

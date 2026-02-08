@@ -99,7 +99,7 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		}
 	}
 
-	if req.MaxRetries != nil && *req.MaxRetries >= 1 && *req.MaxRetries <= 20 {
+	if req.MaxRetries != nil && *req.MaxRetries >= 0 && *req.MaxRetries <= 20 {
 		updates["maxRetries"] = *req.MaxRetries
 	}
 
@@ -107,7 +107,7 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		updates["retryBaseMs"] = *req.RetryBaseMs
 	}
 
-	if req.RetryMaxMs != nil && *req.RetryMaxMs >= 1000 && *req.RetryMaxMs <= 120000 {
+	if req.RetryMaxMs != nil && *req.RetryMaxMs >= 1000 && *req.RetryMaxMs <= 60000 {
 		updates["retryMaxMs"] = *req.RetryMaxMs
 	}
 
@@ -115,11 +115,11 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		updates["persistTokenCache"] = *req.PersistTokenCache
 	}
 
-	if req.DefaultCooldownMs != nil && *req.DefaultCooldownMs >= 1000 && *req.DefaultCooldownMs <= 300000 {
+	if req.DefaultCooldownMs != nil && *req.DefaultCooldownMs >= 0 && *req.DefaultCooldownMs <= 600000 {
 		updates["defaultCooldownMs"] = *req.DefaultCooldownMs
 	}
 
-	if req.MaxWaitBeforeErrorMs != nil && *req.MaxWaitBeforeErrorMs >= 0 && *req.MaxWaitBeforeErrorMs <= 600000 {
+	if req.MaxWaitBeforeErrorMs != nil && *req.MaxWaitBeforeErrorMs >= 60000 && *req.MaxWaitBeforeErrorMs <= 1800000 {
 		updates["maxWaitBeforeErrorMs"] = *req.MaxWaitBeforeErrorMs
 	}
 

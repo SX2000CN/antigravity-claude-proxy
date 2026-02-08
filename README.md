@@ -4,6 +4,20 @@
 [![npm downloads](https://img.shields.io/npm/dm/antigravity-claude-proxy.svg)](https://www.npmjs.com/package/antigravity-claude-proxy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> **🚀 Beta 分支说明**
+>
+> 此分支包含 **Go 语言重写的高性能后端**，使用 Redis 替代 JSON 文件存储。
+>
+> - 📦 **Go 后端**: 单二进制部署，更低内存占用 (~50MB vs ~200MB)
+> - 🗄️ **Redis 存储**: 可选的数据持久化，支持分布式部署
+> - 🔄 **完全兼容**: API 与原版 100% 兼容，前端无需修改
+> - 📖 **文档**: 详见 [go-backend/README.md](go-backend/README.md) 和 [go-backend/DEPLOYMENT.md](go-backend/DEPLOYMENT.md)
+>
+> ```bash
+> # 快速启动 Go 版本
+> cd go-backend && make build && cd .. && ./go-backend/build/antigravity-proxy
+> ```
+
 A proxy server that exposes an **Anthropic-compatible API** backed by **Antigravity's Cloud Code**, letting you use Claude and Gemini models with **Claude Code CLI** and **OpenClaw / ClawdBot**.
 
 ![Antigravity Claude Proxy Banner](images/banner.png)
