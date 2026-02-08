@@ -143,6 +143,7 @@ func (h *MessageHandler) SendMessage(ctx context.Context, anthropicRequest *anth
 		var lastError error
 		capacityRetryCount := 0
 
+	endpointLoop:
 		for endpointIndex := 0; endpointIndex < len(config.AntigravityEndpointFallbacks); endpointIndex++ {
 			endpoint := config.AntigravityEndpointFallbacks[endpointIndex]
 
@@ -245,7 +246,7 @@ func (h *MessageHandler) SendMessage(ctx context.Context, anthropicRequest *anth
 							selectedAccount.Email, backoff.Attempt)
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, smartBackoffMs, model)
 						lastError = fmt.Errorf("RATE_LIMITED_DEDUP: %s", errorText)
-						break // Break to try next account
+						break endpointLoop // Break to try next account
 					}
 
 					// Calculate smart backoff
@@ -265,7 +266,7 @@ func (h *MessageHandler) SendMessage(ctx context.Context, anthropicRequest *anth
 						utils.SleepMs(config.SwitchAccountDelayMs)
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, smartBackoffMs, model)
 						lastError = fmt.Errorf("QUOTA_EXHAUSTED: %s", errorText)
-						break
+						break endpointLoop
 					} else {
 						waitMs := backoff.DelayMs
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, waitMs, model)
@@ -374,10 +375,7 @@ func (h *MessageHandler) SendMessage(ctx context.Context, anthropicRequest *anth
 
 // getTokenForAccount gets an access token for the account
 func (h *MessageHandler) getTokenForAccount(ctx context.Context, acc *redis.Account) (string, error) {
-	// This would integrate with the auth module
-	// For now, we'll use the refresh token to get an access token
-	// This is a placeholder - actual implementation would use OAuth
-	return "TODO_GET_ACCESS_TOKEN", nil
+	return h.accountManager.GetTokenForAccount(ctx, acc)
 }
 
 // Helper functions

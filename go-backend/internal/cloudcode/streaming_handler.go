@@ -159,6 +159,7 @@ func (h *StreamingHandler) streamWithRetry(ctx context.Context, anthropicRequest
 		var lastError error
 		capacityRetryCount := 0
 
+	endpointLoop:
 		for endpointIndex := 0; endpointIndex < len(config.AntigravityEndpointFallbacks); endpointIndex++ {
 			endpoint := config.AntigravityEndpointFallbacks[endpointIndex]
 			url := endpoint + "/v1internal:streamGenerateContent?alt=sse"
@@ -239,7 +240,7 @@ func (h *StreamingHandler) streamWithRetry(ctx context.Context, anthropicRequest
 							selectedAccount.Email, backoff.Attempt)
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, smartBackoffMs, model)
 						lastError = fmt.Errorf("RATE_LIMITED_DEDUP: %s", errorText)
-						break
+						break endpointLoop
 					}
 
 					smartBackoffMs := CalculateSmartBackoff(errorText, resetMs, 0)
@@ -257,7 +258,7 @@ func (h *StreamingHandler) streamWithRetry(ctx context.Context, anthropicRequest
 						utils.SleepMs(config.SwitchAccountDelayMs)
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, smartBackoffMs, model)
 						lastError = fmt.Errorf("QUOTA_EXHAUSTED: %s", errorText)
-						break
+						break endpointLoop
 					} else {
 						waitMs := backoff.DelayMs
 						_ = h.accountManager.MarkRateLimited(ctx, selectedAccount.Email, waitMs, model)
@@ -355,7 +356,7 @@ func (h *StreamingHandler) streamWithRetry(ctx context.Context, anthropicRequest
 					h.accountManager.NotifySuccess(selectedAccount, model)
 					return nil
 				}
-				break
+				break endpointLoop
 			}
 		}
 
@@ -402,10 +403,7 @@ func (h *StreamingHandler) streamWithRetry(ctx context.Context, anthropicRequest
 
 // getTokenForAccount gets an access token for the account
 func (h *StreamingHandler) getTokenForAccount(ctx context.Context, acc *redis.Account) (string, error) {
-	// This would integrate with the auth module
-	// For now, we'll use the refresh token to get an access token
-	// This is a placeholder - actual implementation would use OAuth
-	return "TODO_GET_ACCESS_TOKEN", nil
+	return h.accountManager.GetTokenForAccount(ctx, acc)
 }
 
 // emitEmptyResponseFallback emits a fallback message when all retry attempts fail

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/poemonsense/antigravity-proxy-go/internal/auth"
+	"github.com/poemonsense/antigravity-proxy-go/internal/utils"
 	"github.com/poemonsense/antigravity-proxy-go/pkg/redis"
 )
 
@@ -91,10 +92,13 @@ func (c *Credentials) getFreshToken(ctx context.Context, acc *redis.Account) (st
 			return "", fmt.Errorf("no refresh token for account %s", acc.Email)
 		}
 		// Use the package-level function from auth
+		utils.Debug("[Credentials] Refreshing OAuth token for %s", acc.Email)
 		result, err := auth.RefreshAccessToken(ctx, acc.RefreshToken)
 		if err != nil {
+			utils.Error("[Credentials] Failed to refresh token for %s: %v", acc.Email, err)
 			return "", err
 		}
+		utils.Success("[Credentials] Refreshed OAuth token for %s", acc.Email)
 		return result.AccessToken, nil
 
 	case "manual":

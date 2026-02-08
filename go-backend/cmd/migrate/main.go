@@ -27,8 +27,8 @@ type LegacyAccount struct {
 	Source           string                        `json:"source"`
 	RefreshToken     string                        `json:"refreshToken"`
 	ProjectID        string                        `json:"projectId"`
-	AddedAt          string                        `json:"addedAt"`
-	LastUsed         string                        `json:"lastUsed"`
+	AddedAt          interface{}                   `json:"addedAt"`  // Can be number or string
+	LastUsed         interface{}                   `json:"lastUsed"` // Can be number or string
 	Enabled          *bool                         `json:"enabled"`
 	IsInvalid        bool                          `json:"isInvalid"`
 	InvalidReason    string                        `json:"invalidReason"`
@@ -48,8 +48,8 @@ type LegacyRateLimit struct {
 
 // LegacyQuotaInfo represents quota info in the old format
 type LegacyQuotaInfo struct {
-	RemainingFraction float64 `json:"remainingFraction"`
-	ResetTime         int64   `json:"resetTime"`
+	RemainingFraction float64     `json:"remainingFraction"`
+	ResetTime         interface{} `json:"resetTime"` // Can be string or number
 }
 
 // LegacyAccountQuota represents account-level quota in the old format
@@ -173,12 +173,19 @@ func migrateAccounts(path string, redisClient *redis.Client, dryRun bool) error 
 	for _, legacyAcc := range config.Accounts {
 		enabled := legacyAcc.Enabled == nil || *legacyAcc.Enabled
 
-		// Convert last used time
+		// Convert last used time (can be string or number)
 		var lastUsed int64
-		if legacyAcc.LastUsed != "" {
-			if t, err := time.Parse(time.RFC3339, legacyAcc.LastUsed); err == nil {
-				lastUsed = t.UnixMilli()
+		switch v := legacyAcc.LastUsed.(type) {
+		case string:
+			if v != "" {
+				if t, err := time.Parse(time.RFC3339, v); err == nil {
+					lastUsed = t.UnixMilli()
+				}
 			}
+		case float64:
+			lastUsed = int64(v)
+		case int64:
+			lastUsed = v
 		}
 
 		// Build new account structure
@@ -210,10 +217,19 @@ func migrateAccounts(path string, redisClient *redis.Client, dryRun bool) error 
 				LastChecked: legacyAcc.Quota.LastChecked,
 			}
 			for modelID, q := range legacyAcc.Quota.Models {
-				// Convert reset time from int64 to string
+				// Convert reset time (can be string or number)
 				resetTimeStr := ""
-				if q.ResetTime > 0 {
-					resetTimeStr = time.UnixMilli(q.ResetTime).Format(time.RFC3339)
+				switch v := q.ResetTime.(type) {
+				case string:
+					resetTimeStr = v // Already a string
+				case float64:
+					if v > 0 {
+						resetTimeStr = time.UnixMilli(int64(v)).Format(time.RFC3339)
+					}
+				case int64:
+					if v > 0 {
+						resetTimeStr = time.UnixMilli(v).Format(time.RFC3339)
+					}
 				}
 				acc.Quota.Models[modelID] = &redis.ModelQuotaInfo{
 					RemainingFraction: q.RemainingFraction,

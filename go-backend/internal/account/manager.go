@@ -4,6 +4,7 @@ package account
 
 import (
 	"context"
+	"strings"
 	"sync"
 	"time"
 
@@ -27,10 +28,7 @@ type Manager struct {
 	settings     map[string]interface{}
 	initialized  bool
 
-	// Token cache (in-memory for fast access)
-	tokenCache map[string]string
-
-	// Credentials manager
+	// Credentials manager (handles token caching with TTL)
 	credentials *Credentials
 
 	// Strategy
@@ -48,7 +46,6 @@ func NewManager(redisClient *redis.Client, cfg *config.Config) *Manager {
 		accountStore: redis.NewAccountStore(redisClient),
 		accounts:     make([]*redis.Account, 0),
 		settings:     make(map[string]interface{}),
-		tokenCache:   make(map[string]string),
 		credentials:  NewCredentials(redisClient),
 		strategyName: config.DefaultSelectionStrategy,
 		config:       cfg,
@@ -517,37 +514,46 @@ func NewNoAccountsError(message string, allRateLimited bool) *NoAccountsError {
 }
 
 // GetTokenForAccount gets an access token for the given account
+// 直接委托给 Credentials 管理器，它有正确的 TTL 处理
+// 匹配 Node.js 版本的 getTokenForAccount 行为
 func (m *Manager) GetTokenForAccount(ctx context.Context, acc *redis.Account) (string, error) {
-	m.mu.RLock()
-	defer m.mu.RUnlock()
-
-	// Check token cache first
-	if m.tokenCache != nil {
-		if cachedToken, ok := m.tokenCache[acc.Email]; ok {
-			return cachedToken, nil
-		}
-	}
-
-	// Get token from credentials manager
+	// 直接使用 credentials manager 获取 token
+	// credentials.GetAccessToken 已经有正确的缓存和 TTL 逻辑
 	token, err := m.credentials.GetAccessToken(ctx, acc)
 	if err != nil {
+		// 检查是否是认证错误，需要标记账户无效
+		if isAuthError(err) {
+			_ = m.MarkInvalid(ctx, acc.Email, err.Error())
+		}
 		return "", err
 	}
 
-	// Cache the token
-	if m.tokenCache == nil {
-		m.tokenCache = make(map[string]string)
+	// 成功获取 token，清除无效标记（如果有的话）
+	if acc.IsInvalid {
+		acc.IsInvalid = false
+		acc.InvalidReason = ""
+		_ = m.accountStore.SetAccount(ctx, acc)
 	}
-	m.tokenCache[acc.Email] = token
 
 	return token, nil
 }
 
+// isAuthError 检查是否是认证相关错误
+func isAuthError(err error) bool {
+	if err == nil {
+		return false
+	}
+	errStr := err.Error()
+	// OAuth token refresh 失败通常表示凭证无效
+	return strings.Contains(errStr, "token refresh failed") ||
+		strings.Contains(errStr, "invalid_grant") ||
+		strings.Contains(errStr, "Token has been expired or revoked")
+}
+
 // ClearTokenCache clears all cached tokens
+// 委托给 Credentials 管理器，匹配 Node.js 的 clearTokenCache 行为
 func (m *Manager) ClearTokenCache() {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	m.tokenCache = make(map[string]string)
+	m.credentials.ClearCache()
 }
 
 // ClearProjectCache clears project cache (placeholder for now)
@@ -621,12 +627,9 @@ func (m *Manager) UpdateAccountQuota(email string, quotas map[string]interface{}
 }
 
 // ClearTokenCacheFor clears cached token for a specific email
+// 委托给 Credentials 管理器
 func (m *Manager) ClearTokenCacheFor(email string) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	if m.tokenCache != nil {
-		delete(m.tokenCache, email)
-	}
+	m.credentials.ClearCacheForAccount(context.Background(), email)
 }
 
 // ClearProjectCacheFor clears project cache for a specific email

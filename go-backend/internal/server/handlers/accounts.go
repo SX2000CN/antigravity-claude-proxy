@@ -182,8 +182,13 @@ func (h *AccountsHandler) AccountLimits(c *gin.Context) {
 			accData["invalidReason"] = metadata.InvalidReason
 			accData["lastUsed"] = metadata.LastUsed
 			accData["modelRateLimits"] = metadata.ModelRateLimits
-			accData["quotaThreshold"] = metadata.QuotaThreshold
-			accData["modelQuotaThresholds"] = metadata.ModelQuotaThresholds
+			// Only include quotaThreshold if it's set (matches Node.js behavior)
+			if metadata.QuotaThreshold != nil {
+				accData["quotaThreshold"] = metadata.QuotaThreshold
+			}
+			if len(metadata.ModelQuotaThresholds) > 0 {
+				accData["modelQuotaThresholds"] = metadata.ModelQuotaThresholds
+			}
 		}
 
 		// Build limits

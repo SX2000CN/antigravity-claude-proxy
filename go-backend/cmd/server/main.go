@@ -111,7 +111,9 @@ func main() {
 
 	// Initialize Redis client
 	redisClient, err := redis.NewClient(redis.Config{
-		Addr: "localhost:6379",
+		Addr:     cfg.RedisAddr,
+		Password: cfg.RedisPassword,
+		DB:       cfg.RedisDB,
 	})
 	if err != nil {
 		utils.Error("[Startup] Failed to connect to Redis: %v", err)
