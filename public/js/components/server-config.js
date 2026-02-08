@@ -22,7 +22,7 @@ window.Components.serverConfig = () => ({
     editingPresetOriginalName: '',
     presetPreviewExpanded: false,
     editingPresetConfig: false,
-    editingConfigDraft: {},
+    editingConfigDraft: { accountSelection: { strategy: 'hybrid' } },
     editingConfigErrors: {},
     savingPresetConfig: false,
     configEditMode: 'ui',
@@ -961,7 +961,7 @@ window.Components.serverConfig = () => ({
 
     cancelPresetConfigEdit() {
         this.editingPresetConfig = false;
-        this.editingConfigDraft = {};
+        this.editingConfigDraft = { accountSelection: { strategy: 'hybrid' } };
         this.editingConfigErrors = {};
         this.configEditMode = 'ui';
         this.editingJsonText = '';
@@ -1147,7 +1147,7 @@ window.Components.serverConfig = () => ({
             if (data.status === 'ok') {
                 this.serverPresets = data.presets || [];
                 this.editingPresetConfig = false;
-                this.editingConfigDraft = {};
+                this.editingConfigDraft = { accountSelection: { strategy: 'hybrid' } };
                 this.editingConfigErrors = {};
                 this.configEditMode = 'ui';
                 this.editingJsonText = '';
