@@ -74,12 +74,52 @@ func getPlatformUserAgent() string {
 	return fmt.Sprintf("antigravity/1.16.5 %s/%s", os, arch)
 }
 
+// IDE Type enum (numeric values as expected by Cloud Code API)
+// Reference: Antigravity binary analysis - google.internal.cloud.code.v1internal.ClientMetadata.IdeType
+const (
+	IdeTypeUnspecified = 0
+	IdeTypeJetski      = 5 // Internal codename for Gemini CLI
+	IdeTypeAntigravity = 6
+	IdeTypePlugins     = 7
+)
+
+// Platform enum
+// Reference: Antigravity binary analysis - google.internal.cloud.code.v1internal.ClientMetadata.Platform
+const (
+	PlatformUnspecified = 0
+	PlatformWindows     = 1
+	PlatformLinux       = 2
+	PlatformMacOS       = 3
+)
+
+// Plugin Type enum
+const (
+	PluginTypeUnspecified = 0
+	PluginTypeDuetAI      = 1
+	PluginTypeGemini      = 2
+)
+
+// getPlatformEnum returns the platform enum value based on the current OS
+func getPlatformEnum() int {
+	switch runtime.GOOS {
+	case "darwin":
+		return PlatformMacOS
+	case "windows":
+		return PlatformWindows
+	case "linux":
+		return PlatformLinux
+	default:
+		return PlatformUnspecified
+	}
+}
+
 // getClientMetadata returns the client metadata JSON string
+// Using numeric enum values as expected by the Cloud Code API
 func getClientMetadata() string {
-	metadata := map[string]string{
-		"ideType":    "IDE_UNSPECIFIED",
-		"platform":   "PLATFORM_UNSPECIFIED",
-		"pluginType": "GEMINI",
+	metadata := map[string]int{
+		"ideType":    IdeTypeAntigravity, // 6 - identifies as Antigravity client
+		"platform":   getPlatformEnum(),  // Runtime platform detection
+		"pluginType": PluginTypeGemini,   // 2
 	}
 	data, _ := json.Marshal(metadata)
 	return string(data)
@@ -346,3 +386,181 @@ var DefaultPresets = []DefaultPreset{
 		},
 	},
 }
+
+// ServerPresetConfig represents the configuration values in a server preset
+type ServerPresetConfig struct {
+	MaxRetries             int                    `json:"maxRetries"`
+	RetryBaseMs            int64                  `json:"retryBaseMs"`
+	RetryMaxMs             int64                  `json:"retryMaxMs"`
+	DefaultCooldownMs      int64                  `json:"defaultCooldownMs"`
+	MaxWaitBeforeErrorMs   int64                  `json:"maxWaitBeforeErrorMs"`
+	MaxAccounts            int                    `json:"maxAccounts"`
+	GlobalQuotaThreshold   float64                `json:"globalQuotaThreshold"`
+	RateLimitDedupWindowMs int64                  `json:"rateLimitDedupWindowMs"`
+	MaxConsecutiveFailures int                    `json:"maxConsecutiveFailures"`
+	ExtendedCooldownMs     int64                  `json:"extendedCooldownMs"`
+	MaxCapacityRetries     int                    `json:"maxCapacityRetries"`
+	SwitchAccountDelayMs   int64                  `json:"switchAccountDelayMs"`
+	CapacityBackoffTiersMs []int64                `json:"capacityBackoffTiersMs"`
+	AccountSelection       AccountSelectionConfig `json:"accountSelection"`
+}
+
+// ServerPreset represents a server configuration preset
+type ServerPreset struct {
+	Name           string             `json:"name"`
+	BuiltIn        bool               `json:"builtIn,omitempty"`
+	DescriptionKey string             `json:"descriptionKey,omitempty"`
+	Description    string             `json:"description,omitempty"`
+	Config         ServerPresetConfig `json:"config"`
+}
+
+// DefaultServerPresets are the built-in server configuration presets
+var DefaultServerPresets = []ServerPreset{
+	{
+		Name:           "Default (3-5 Accounts)",
+		BuiltIn:        true,
+		DescriptionKey: "presetDefaultDesc",
+		Config: ServerPresetConfig{
+			MaxRetries:             5,
+			RetryBaseMs:            1000,
+			RetryMaxMs:             30000,
+			DefaultCooldownMs:      10000,
+			MaxWaitBeforeErrorMs:   120000,
+			MaxAccounts:            10,
+			GlobalQuotaThreshold:   0,
+			RateLimitDedupWindowMs: 2000,
+			MaxConsecutiveFailures: 3,
+			ExtendedCooldownMs:     60000,
+			MaxCapacityRetries:     5,
+			SwitchAccountDelayMs:   5000,
+			CapacityBackoffTiersMs: []int64{5000, 10000, 20000, 30000, 60000},
+			AccountSelection: AccountSelectionConfig{
+				Strategy: "hybrid",
+				HealthScore: &HealthScoreConfig{
+					Initial:          70,
+					SuccessReward:    1,
+					RateLimitPenalty: -10,
+					FailurePenalty:   -20,
+					RecoveryPerHour:  10,
+					MinUsable:        50,
+					MaxScore:         100,
+				},
+				TokenBucket: &TokenBucketConfig{
+					MaxTokens:       50,
+					TokensPerMinute: 6,
+					InitialTokens:   50,
+				},
+				Quota: &QuotaConfig{
+					LowThreshold:      0.10,
+					CriticalThreshold: 0.05,
+					StaleMs:           300000,
+				},
+				Weights: &WeightsConfig{
+					Health: 2,
+					Tokens: 5,
+					Quota:  3,
+					Lru:    0.1,
+				},
+			},
+		},
+	},
+	{
+		Name:           "Many Accounts (10+)",
+		BuiltIn:        true,
+		DescriptionKey: "presetManyAccountsDesc",
+		Config: ServerPresetConfig{
+			MaxRetries:             3,
+			RetryBaseMs:            500,
+			RetryMaxMs:             15000,
+			DefaultCooldownMs:      5000,
+			MaxWaitBeforeErrorMs:   60000,
+			MaxAccounts:            50,
+			GlobalQuotaThreshold:   0.10,
+			RateLimitDedupWindowMs: 1000,
+			MaxConsecutiveFailures: 2,
+			ExtendedCooldownMs:     30000,
+			MaxCapacityRetries:     3,
+			SwitchAccountDelayMs:   3000,
+			CapacityBackoffTiersMs: []int64{3000, 6000, 12000, 20000, 40000},
+			AccountSelection: AccountSelectionConfig{
+				Strategy: "hybrid",
+				HealthScore: &HealthScoreConfig{
+					Initial:          70,
+					SuccessReward:    1,
+					RateLimitPenalty: -15,
+					FailurePenalty:   -25,
+					RecoveryPerHour:  5,
+					MinUsable:        40,
+					MaxScore:         100,
+				},
+				TokenBucket: &TokenBucketConfig{
+					MaxTokens:       30,
+					TokensPerMinute: 8,
+					InitialTokens:   30,
+				},
+				Quota: &QuotaConfig{
+					LowThreshold:      0.15,
+					CriticalThreshold: 0.05,
+					StaleMs:           180000,
+				},
+				Weights: &WeightsConfig{
+					Health: 5,
+					Tokens: 2,
+					Quota:  3,
+					Lru:    0.01,
+				},
+			},
+		},
+	},
+	{
+		Name:           "Conservative",
+		BuiltIn:        true,
+		DescriptionKey: "presetConservativeDesc",
+		Config: ServerPresetConfig{
+			MaxRetries:             8,
+			RetryBaseMs:            2000,
+			RetryMaxMs:             60000,
+			DefaultCooldownMs:      20000,
+			MaxWaitBeforeErrorMs:   240000,
+			MaxAccounts:            10,
+			GlobalQuotaThreshold:   0.20,
+			RateLimitDedupWindowMs: 3000,
+			MaxConsecutiveFailures: 5,
+			ExtendedCooldownMs:     120000,
+			MaxCapacityRetries:     8,
+			SwitchAccountDelayMs:   8000,
+			CapacityBackoffTiersMs: []int64{8000, 15000, 30000, 45000, 90000},
+			AccountSelection: AccountSelectionConfig{
+				Strategy: "sticky",
+				HealthScore: &HealthScoreConfig{
+					Initial:          80,
+					SuccessReward:    2,
+					RateLimitPenalty: -5,
+					FailurePenalty:   -10,
+					RecoveryPerHour:  3,
+					MinUsable:        50,
+					MaxScore:         100,
+				},
+				TokenBucket: &TokenBucketConfig{
+					MaxTokens:       80,
+					TokensPerMinute: 4,
+					InitialTokens:   80,
+				},
+				Quota: &QuotaConfig{
+					LowThreshold:      0.20,
+					CriticalThreshold: 0.10,
+					StaleMs:           300000,
+				},
+				Weights: &WeightsConfig{
+					Health: 3,
+					Tokens: 4,
+					Quota:  2,
+					Lru:    0.05,
+				},
+			},
+		},
+	},
+}
+
+// ServerPresetsPath is the path to the server presets file
+var ServerPresetsPath = filepath.Join(getHomeDir(), ".config", "antigravity-proxy", "server-presets.json")

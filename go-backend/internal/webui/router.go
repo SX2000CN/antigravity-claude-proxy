@@ -25,6 +25,7 @@ type Router struct {
 	configHandler   *handlers.ConfigHandler
 	logsHandler     *handlers.LogsHandler
 	claudeHandler   *handlers.ClaudeHandler
+	presetsHandler  *handlers.PresetsHandler
 }
 
 // NewRouter creates a new WebUI router
@@ -37,6 +38,7 @@ func NewRouter(accountManager *account.Manager, cfg *config.Config, usageStats *
 		configHandler:   handlers.NewConfigHandler(cfg, accountManager),
 		logsHandler:     handlers.NewLogsHandler(),
 		claudeHandler:   handlers.NewClaudeHandler(),
+		presetsHandler:  handlers.NewPresetsHandler(),
 	}
 }
 
@@ -105,6 +107,22 @@ func (r *Router) Mount(engine *gin.Engine, publicDir string) {
 
 	// POST /api/models/config - Update model configuration
 	engine.POST("/api/models/config", r.configHandler.UpdateModelConfig)
+
+	// ==========================================
+	// Server Configuration Presets API
+	// ==========================================
+
+	// GET /api/server/presets - List all server config presets
+	engine.GET("/api/server/presets", r.presetsHandler.ListPresets)
+
+	// POST /api/server/presets - Save a custom server config preset
+	engine.POST("/api/server/presets", r.presetsHandler.CreatePreset)
+
+	// PATCH /api/server/presets/:name - Update custom preset metadata and/or config
+	engine.PATCH("/api/server/presets/:name", r.presetsHandler.UpdatePreset)
+
+	// DELETE /api/server/presets/:name - Delete a custom server config preset
+	engine.DELETE("/api/server/presets/:name", r.presetsHandler.DeletePreset)
 
 	// ==========================================
 	// Claude CLI Configuration API

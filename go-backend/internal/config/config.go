@@ -37,12 +37,21 @@ type QuotaConfig struct {
 	UnknownScore      float64 `json:"unknownScore"`
 }
 
+// WeightsConfig configures weights for hybrid strategy scoring
+type WeightsConfig struct {
+	Health float64 `json:"health"`
+	Tokens float64 `json:"tokens"`
+	Quota  float64 `json:"quota"`
+	Lru    float64 `json:"lru"`
+}
+
 // AccountSelectionConfig configures account selection behavior
 type AccountSelectionConfig struct {
 	Strategy    string             `json:"strategy"`
 	HealthScore *HealthScoreConfig `json:"healthScore,omitempty"`
 	TokenBucket *TokenBucketConfig `json:"tokenBucket,omitempty"`
 	Quota       *QuotaConfig       `json:"quota,omitempty"`
+	Weights     *WeightsConfig     `json:"weights,omitempty"`
 }
 
 // Config represents the runtime configuration
@@ -75,10 +84,12 @@ type Config struct {
 	GlobalQuotaThreshold float64 `json:"globalQuotaThreshold"`
 
 	// Rate limit handling
-	RateLimitDedupWindowMs int64 `json:"rateLimitDedupWindowMs"`
-	MaxConsecutiveFailures int   `json:"maxConsecutiveFailures"`
-	ExtendedCooldownMs     int64 `json:"extendedCooldownMs"`
-	MaxCapacityRetries     int   `json:"maxCapacityRetries"`
+	RateLimitDedupWindowMs int64   `json:"rateLimitDedupWindowMs"`
+	MaxConsecutiveFailures int     `json:"maxConsecutiveFailures"`
+	ExtendedCooldownMs     int64   `json:"extendedCooldownMs"`
+	MaxCapacityRetries     int     `json:"maxCapacityRetries"`
+	SwitchAccountDelayMs   int64   `json:"switchAccountDelayMs"`
+	CapacityBackoffTiersMs []int64 `json:"capacityBackoffTiersMs"`
 
 	// Model mapping (for hiding/aliasing models)
 	ModelMapping map[string]string `json:"modelMapping"`
@@ -119,6 +130,8 @@ func DefaultConfig() *Config {
 		MaxConsecutiveFailures: 3,
 		ExtendedCooldownMs:     60000, // 1 minute
 		MaxCapacityRetries:     5,
+		SwitchAccountDelayMs:   5000,  // 5 seconds
+		CapacityBackoffTiersMs: []int64{5000, 10000, 20000, 30000, 60000},
 		ModelMapping:           make(map[string]string),
 		AccountSelection: AccountSelectionConfig{
 			Strategy: "hybrid",
@@ -140,6 +153,12 @@ func DefaultConfig() *Config {
 				LowThreshold:      0.10,
 				CriticalThreshold: 0.05,
 				StaleMs:           300000, // 5 minutes
+			},
+			Weights: &WeightsConfig{
+				Health: 2,
+				Tokens: 5,
+				Quota:  3,
+				Lru:    0.1,
 			},
 		},
 		RedisAddr:       "localhost:6379",
@@ -250,6 +269,8 @@ func (c *Config) loadFromFile(path string) error {
 	c.MaxConsecutiveFailures = tempConfig.MaxConsecutiveFailures
 	c.ExtendedCooldownMs = tempConfig.ExtendedCooldownMs
 	c.MaxCapacityRetries = tempConfig.MaxCapacityRetries
+	c.SwitchAccountDelayMs = tempConfig.SwitchAccountDelayMs
+	c.CapacityBackoffTiersMs = tempConfig.CapacityBackoffTiersMs
 	c.ModelMapping = tempConfig.ModelMapping
 	c.AccountSelection = tempConfig.AccountSelection
 	c.RedisAddr = tempConfig.RedisAddr
@@ -413,6 +434,8 @@ func (c *Config) GetPublic() map[string]interface{} {
 		"maxConsecutiveFailures": c.MaxConsecutiveFailures,
 		"extendedCooldownMs":     c.ExtendedCooldownMs,
 		"maxCapacityRetries":     c.MaxCapacityRetries,
+		"switchAccountDelayMs":   c.SwitchAccountDelayMs,
+		"capacityBackoffTiersMs": c.CapacityBackoffTiersMs,
 		"modelMapping":           c.ModelMapping,
 		"accountSelection":       c.AccountSelection,
 		"redisAddr":              c.RedisAddr,
