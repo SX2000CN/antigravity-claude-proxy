@@ -42,7 +42,7 @@ func (h *ModelsHandler) ListModels(c *gin.Context) {
 
 	token, err := h.accountManager.GetTokenForAccount(ctx, result.Account)
 	if err != nil {
-		utils.Error("[API] Error getting token for models:", err)
+		utils.Error("[API] Error getting token for models: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"type": "error",
 			"error": gin.H{
@@ -55,7 +55,7 @@ func (h *ModelsHandler) ListModels(c *gin.Context) {
 
 	models, err := cloudcode.ListModels(ctx, token)
 	if err != nil {
-		utils.Error("[API] Error listing models:", err)
+		utils.Error("[API] Error listing models: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"type": "error",
 			"error": gin.H{

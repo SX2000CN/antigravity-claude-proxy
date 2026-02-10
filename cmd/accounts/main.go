@@ -239,7 +239,7 @@ func prompt(scanner *bufio.Scanner, message string) string {
 
 // addAccount adds a new account via OAuth with automatic callback
 func addAccount(existingAccounts []*redis.Account) *redis.Account {
-	fmt.Println("\n=== Add Google Account ===\n")
+	fmt.Println("\n=== Add Google Account ===")
 
 	// Generate authorization URL
 	result, err := auth.GetAuthorizationURL("")
@@ -249,14 +249,14 @@ func addAccount(existingAccounts []*redis.Account) *redis.Account {
 	}
 
 	fmt.Println("Opening browser for Google sign-in...")
-	fmt.Println("(If browser does not open, copy this URL manually)\n")
+	fmt.Println("(If browser does not open, copy this URL manually)")
 	fmt.Printf("   %s\n\n", result.URL)
 
 	// Open browser
 	openBrowser(result.URL)
 
 	// Start callback server and wait for code
-	fmt.Println("Waiting for authentication (timeout: 2 minutes)...\n")
+	fmt.Println("Waiting for authentication (timeout: 2 minutes)...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
@@ -302,7 +302,7 @@ func addAccount(existingAccounts []*redis.Account) *redis.Account {
 
 // addAccountNoBrowser adds a new account via manual code input
 func addAccountNoBrowser(existingAccounts []*redis.Account, scanner *bufio.Scanner) *redis.Account {
-	fmt.Println("\n=== Add Google Account (No-Browser Mode) ===\n")
+	fmt.Println("\n=== Add Google Account (No-Browser Mode) ===")
 
 	// Generate authorization URL
 	result, err := auth.GetAuthorizationURL("")
@@ -311,10 +311,10 @@ func addAccountNoBrowser(existingAccounts []*redis.Account, scanner *bufio.Scann
 		return nil
 	}
 
-	fmt.Println("Copy the following URL and open it in a browser on another device:\n")
+	fmt.Println("Copy the following URL and open it in a browser on another device:")
 	fmt.Printf("   %s\n\n", result.URL)
 	fmt.Println("After signing in, you will be redirected to a localhost URL.")
-	fmt.Println("Copy the ENTIRE redirect URL or just the authorization code.\n")
+	fmt.Println("Copy the ENTIRE redirect URL or just the authorization code.")
 
 	input := prompt(scanner, "Paste the callback URL or authorization code: ")
 	if input == "" {
@@ -370,7 +370,7 @@ func addAccountNoBrowser(existingAccounts []*redis.Account, scanner *bufio.Scann
 // interactiveAdd handles the interactive add flow
 func interactiveAdd(scanner *bufio.Scanner, noBrowser bool) {
 	if noBrowser {
-		fmt.Println("\n📋 No-browser mode: You will manually paste the authorization code.\n")
+		fmt.Println("\n📋 No-browser mode: You will manually paste the authorization code.")
 	}
 
 	accounts := loadAccounts()
@@ -516,7 +516,7 @@ func verifyAccounts() {
 		return
 	}
 
-	fmt.Println("\nVerifying accounts...\n")
+	fmt.Println("\nVerifying accounts...")
 
 	ctx := context.Background()
 	for _, acc := range accounts {
