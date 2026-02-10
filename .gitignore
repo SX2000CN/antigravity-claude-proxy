@@ -21,11 +21,6 @@ log.txt
 # Runtime data
 data/
 
-# Test artifacts
-tests/utils/*.png
-tests/utils/*.jpg
-tests/utils/*.jpeg
-
 # Environment
 .env
 .env.local
