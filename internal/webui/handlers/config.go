@@ -183,6 +183,17 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		return
 	}
 
+	// Hot-reload strategy if it was changed (no server restart needed)
+	if req.AccountSelection != nil {
+		if strategy, ok := req.AccountSelection["strategy"].(string); ok && h.accountManager != nil {
+			if err := h.accountManager.Reload(c.Request.Context()); err != nil {
+				utils.Error("[WebUI] Failed to hot-reload strategy: %v", err)
+			} else {
+				utils.Info("[WebUI] Strategy hot-reloaded to: %s", strategy)
+			}
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "ok",
 		"message": "Configuration saved. Restart server to apply some changes.",
