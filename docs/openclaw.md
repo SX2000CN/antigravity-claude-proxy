@@ -63,8 +63,8 @@
             "maxTokens": 16384
           },
           {
-            "id": "claude-opus-4-5-thinking",
-            "name": "Claude Opus 4.5 Thinking",
+            "id": "claude-opus-4-6-thinking",
+            "name": "Claude Opus 4.6 Thinking",
             "reasoning": true,
             "input": ["text", "image"],
             "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
@@ -118,7 +118,7 @@ openclaw status
 要更改默认模型：
 
 ```bash
-openclaw models set antigravity-proxy/claude-opus-4-5-thinking
+openclaw models set antigravity-proxy/claude-opus-4-6-thinking
 ```
 
 或者编辑配置文件中的 `model.primary` 字段。
