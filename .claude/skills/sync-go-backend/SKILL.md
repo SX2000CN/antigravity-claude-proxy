@@ -1,8 +1,6 @@
 ---
-name: Sync Upstream Changes
 description: 同步上游更新到 beta 分支（前端自动合并，后端手动同步到 Go）
-category: Development
-tags: [sync, go, backend, upstream]
+disable-model-invocation: true
 ---
 
 ## 任务目标
