@@ -14,7 +14,7 @@ argument-hint: "[模块名，如 cloudcode/format/webui，留空则全量同步]
 同步上游 main 分支的更新到 beta 分支：
 
 - **前端** (`public/`)：Git 自动合并，仅需处理冲突和 CSS 重编译
-- **后端** (`src/`)：手动同步到 `go-backend/internal/`，逐模块对比转换
+- **后端** (`src/`)：手动同步到 `internal/`，逐模块对比转换
 
 如果指定了模块名 `$ARGUMENTS`，则仅同步该模块。否则全量检测。
 
@@ -51,7 +51,7 @@ git diff HEAD~1...HEAD --name-only -- src/
 git show main:src/<path>
 
 # 读取对应的 Go 文件
-cat go-backend/internal/<mapped-path>
+cat internal/<mapped-path>
 ```
 
 对比时重点关注：
@@ -63,7 +63,7 @@ cat go-backend/internal/<mapped-path>
 ### 4. 验证后端
 
 ```bash
-cd go-backend && go build ./... && go vet ./...
+go build ./... && go vet ./...
 ```
 
 ### 5. 验证前端

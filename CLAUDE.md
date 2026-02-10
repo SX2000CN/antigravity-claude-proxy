@@ -33,15 +33,15 @@ npm run build:css            # Build CSS once (minified)
 npm run watch:css            # Watch CSS files for changes
 
 # Go backend
-cd go-backend && go build ./...    # Build
-cd go-backend && go vet ./...      # Static analysis
-cd go-backend && go test ./...     # Run tests
+go build ./...                     # Build
+go vet ./...                       # Static analysis
+go test ./...                      # Run tests
 
 # Docker (local development)
-cd go-backend && docker-compose -f docker-compose.local.yml up -d
+docker-compose -f docker-compose.local.yml up -d
 
 # Account management (via Go CLI)
-cd go-backend && go run cmd/accounts/main.go
+go run cmd/accounts/main.go
 ```
 
 ## Architecture
@@ -54,36 +54,36 @@ Claude Code CLI → Gin Server → CloudCode Client → Antigravity Cloud Code A
 **Directory Structure:**
 
 ```
-go-backend/
-├── cmd/                        # Application entry points
-│   ├── server/main.go          # Main server
-│   ├── accounts/main.go        # Account management CLI
-│   └── migrate/main.go         # Database migration
-├── internal/                   # Core business logic
-│   ├── server/                 # HTTP server & routing
-│   ├── config/                 # Configuration & constants
-│   │   ├── config.go           # Runtime configuration
-│   │   ├── constants.go        # API endpoints, model mappings, enums
-│   │   ├── server_presets.go   # Server configuration presets
-│   │   └── presets.go          # Preset file management
-│   ├── cloudcode/              # Cloud Code API client
-│   ├── account/                # Multi-account pool management
-│   │   └── strategies/         # Account selection strategies
-│   ├── auth/                   # Authentication (OAuth, tokens)
-│   ├── format/                 # Format conversion (Anthropic ↔ Google)
-│   ├── webui/                  # WebUI backend API
-│   │   └── handlers/           # API route handlers
-│   ├── modules/                # Feature modules (usage stats)
-│   └── utils/                  # Utility functions
-├── pkg/                        # Reusable packages
-│   ├── anthropic/              # Anthropic type definitions
-│   └── redis/                  # Redis client wrapper
+├── cmd/                            # Application entry points
+│   ├── server/main.go              # Main server
+│   ├── accounts/main.go            # Account management CLI
+│   └── migrate/main.go             # Database migration
+├── internal/                       # Core business logic
+│   ├── server/                     # HTTP server & routing
+│   ├── config/                     # Configuration & constants
+│   │   ├── config.go               # Runtime configuration
+│   │   ├── constants.go            # API endpoints, model mappings, enums
+│   │   ├── server_presets.go       # Server configuration presets
+│   │   └── presets.go              # Preset file management
+│   ├── cloudcode/                  # Cloud Code API client
+│   ├── account/                    # Multi-account pool management
+│   │   └── strategies/             # Account selection strategies
+│   ├── auth/                       # Authentication (OAuth, tokens)
+│   ├── format/                     # Format conversion (Anthropic ↔ Google)
+│   ├── webui/                      # WebUI backend API
+│   │   └── handlers/               # API route handlers
+│   ├── modules/                    # Feature modules (usage stats)
+│   └── utils/                      # Utility functions
+├── pkg/                            # Reusable packages
+│   ├── anthropic/                  # Anthropic type definitions
+│   └── redis/                      # Redis client wrapper
 ├── go.mod
 ├── go.sum
 ├── Dockerfile
-└── docker-compose.local.yml    # Local development compose
-
-public/                         # Frontend (shared with upstream)
+├── docker-compose.yml
+├── docker-compose.local.yml        # Local development compose
+│
+├── public/                         # Frontend (shared with upstream)
 ├── index.html                  # Main entry point
 ├── css/
 │   ├── style.css               # Compiled Tailwind CSS (generated, do not edit)
