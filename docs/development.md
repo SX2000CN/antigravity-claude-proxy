@@ -1,54 +1,54 @@
-# Development
+# 开发指南
 
-## For Developers & Contributors
+## 开发者与贡献者
 
-This project uses a local Tailwind CSS build system. CSS is pre-compiled and included in the repository, so you can run the project immediately after cloning.
+本项目使用本地 Tailwind CSS 构建系统。CSS 已预编译并包含在仓库中，因此克隆后即可立即运行项目。
 
-### Quick Start
+### 快速开始
 
 ```bash
 git clone https://github.com/badri-s2001/antigravity-claude-proxy.git
 cd antigravity-claude-proxy
-npm install  # Automatically builds CSS via prepare hook
-npm start    # Start server (no rebuild needed)
+npm install  # 通过 prepare 钩子自动构建 CSS
+npm start    # 启动服务器（无需重新构建）
 ```
 
-### Frontend Development
+### 前端开发
 
-If you need to modify styles in `public/css/src/input.css`:
+如果你需要修改 `public/css/src/input.css` 中的样式：
 
 ```bash
-# Option 1: Build once
+# 选项 1: 构建一次
 npm run build:css
 
-# Option 2: Watch for changes (auto-rebuild)
+# 选项 2: 监听变更（自动重新构建）
 npm run watch:css
 
-# Option 3: Watch both CSS and server (recommended)
+# 选项 3: 同时监听 CSS 和服务器（推荐）
 npm run dev:full
 ```
 
-**File Structure:**
-- `public/css/src/input.css` - Source CSS with Tailwind `@apply` directives (edit this)
-- `public/css/style.css` - Compiled & minified CSS (auto-generated, don't edit)
-- `tailwind.config.js` - Tailwind configuration
-- `postcss.config.js` - PostCSS configuration
+**文件结构：**
+- `public/css/src/input.css` - 包含 Tailwind `@apply` 指令的源 CSS（编辑此文件）
+- `public/css/style.css` - 编译并压缩后的 CSS（自动生成，请勿编辑）
+- `tailwind.config.js` - Tailwind 配置
+- `postcss.config.js` - PostCSS 配置
 
-### Backend-Only Development
+### 仅后端开发
 
-If you're only working on backend code and don't need frontend dev tools:
+如果你只处理后端代码，不需要前端开发工具：
 
 ```bash
-npm install --production  # Skip devDependencies (saves ~20MB)
+npm install --production  # 跳过 devDependencies（节省约 20MB）
 npm start
 ```
 
-**Note:** Pre-compiled CSS is committed to the repository, so you don't need to rebuild unless modifying styles.
+**注意：** 预编译的 CSS 已提交到仓库，除非修改样式，否则无需重新构建。
 
-### Project Structure
+### 项目结构
 
-See [CLAUDE.md](../CLAUDE.md) for detailed architecture documentation, including:
-- Request flow and module organization
-- Frontend architecture (Alpine.js + Tailwind)
-- Service layer patterns (`ErrorHandler.withLoading`, `AccountActions`)
-- Dashboard module documentation
+详见 [CLAUDE.md](../CLAUDE.md) 获取详细的架构文档，包括：
+- 请求流程和模块组织
+- 前端架构 (Alpine.js + Tailwind)
+- 服务层模式 (`ErrorHandler.withLoading`, `AccountActions`)
+- 仪表盘模块文档

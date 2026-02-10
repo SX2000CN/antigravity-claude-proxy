@@ -1,29 +1,29 @@
-# Troubleshooting
+# 故障排除 (Troubleshooting)
 
-## Quick Links
+## 快速链接
 
-- [Windows: OAuth Port Error (EACCES)](#windows-oauth-port-error-eacces)
+- [Windows: OAuth 端口错误 (EACCES)](#windows-oauth-port-error-eacces)
 - ["Could not extract token from Antigravity"](#could-not-extract-token-from-antigravity)
-- [401 Authentication Errors](#401-authentication-errors)
-- [Rate Limiting (429)](#rate-limiting-429)
-- [Account Shows as "Invalid"](#account-shows-as-invalid)
-- [403 Permission Denied](#403-permission-denied)
+- [401 认证错误](#401-authentication-errors)
+- [速率限制 (Rate Limiting 429)](#rate-limiting-429)
+- [账户显示为 "Invalid" (无效)](#account-shows-as-invalid)
+- [403 权限被拒绝 (Permission Denied)](#403-permission-denied)
 
 ---
 
-## Windows: OAuth Port Error (EACCES)
+## Windows: OAuth 端口错误 (EACCES)
 
-On Windows, the default OAuth callback port (51121) may be reserved by Hyper-V, WSL2, or Docker. If you see:
+在 Windows 上，默认的 OAuth 回调端口 (51121) 可能被 Hyper-V、WSL2 或 Docker 保留。如果你看到：
 
 ```
 Error: listen EACCES: permission denied 0.0.0.0:51121
 ```
 
-The proxy will automatically try fallback ports (51122-51126). If all ports fail, try these solutions:
+代理会自动尝试备用端口 (51122-51126)。如果所有端口都失败，请尝试以下解决方案：
 
-### Option 1: Use a Custom Port (Recommended)
+### 选项 1: 使用自定义端口（推荐）
 
-Set a custom port outside the reserved range:
+设置一个保留范围之外的自定义端口：
 
 ```bash
 # Windows PowerShell
@@ -34,90 +34,90 @@ antigravity-claude-proxy start
 set OAUTH_CALLBACK_PORT=3456
 antigravity-claude-proxy start
 
-# Or add to your .env file
+# 或者添加到你的 .env 文件
 OAUTH_CALLBACK_PORT=3456
 ```
 
-### Option 2: Reset Windows NAT
+### 选项 2: 重置 Windows NAT
 
-Run as Administrator:
+以管理员身份运行：
 
 ```powershell
 net stop winnat
 net start winnat
 ```
 
-### Option 3: Check Reserved Ports
+### 选项 3: 检查保留端口
 
-See which ports are reserved:
+查看哪些端口被保留：
 
 ```powershell
 netsh interface ipv4 show excludedportrange protocol=tcp
 ```
 
-If 51121 is in a reserved range, use Option 1 with a port outside those ranges.
+如果 51121 在保留范围内，请使用选项 1 设置该范围之外的端口。
 
-### Option 4: Permanently Exclude Port (Admin)
+### 选项 4: 永久排除端口（管理员）
 
-Reserve the port before Hyper-V claims it (run as Administrator):
+在 Hyper-V 占用端口之前保留它（以管理员身份运行）：
 
 ```powershell
 netsh int ipv4 add excludedportrange protocol=tcp startport=51121 numberofports=1
 ```
 
-> **Note:** The server automatically tries fallback ports (51122-51126) if the primary port fails.
+> **注意：** 如果主端口失败，服务器会自动尝试备用端口 (51122-51126)。
 
 ---
 
 ## "Could not extract token from Antigravity"
 
-If using single-account mode with Antigravity:
+如果使用 Antigravity 单账户模式：
 
-1. Make sure Antigravity app is installed and running
-2. Ensure you're logged in to Antigravity
+1. 确保 Antigravity 应用程序已安装并正在运行
+2. 确保你已登录 Antigravity
 
-Or add accounts via OAuth instead: `antigravity-claude-proxy accounts add`
+或者通过 OAuth 添加账户：`antigravity-claude-proxy accounts add`
 
-## 401 Authentication Errors
+## 401 认证错误 (Authentication Errors)
 
-The token might have expired. Try:
+Token 可能已过期。尝试：
 
 ```bash
 curl -X POST http://localhost:8080/refresh-token
 ```
 
-Or re-authenticate the account:
+或者重新认证该账户：
 
 ```bash
 antigravity-claude-proxy accounts
 ```
 
-## Rate Limiting (429)
+## 速率限制 (Rate Limiting 429)
 
-With multiple accounts, the proxy automatically switches to the next available account. With a single account, you'll need to wait for the rate limit to reset.
+如果有多个账户，代理会自动切换到下一个可用账户。如果是单账户，你需要等待速率限制重置。
 
-## Account Shows as "Invalid"
+## 账户显示为 "Invalid" (无效)
 
-Re-authenticate the account:
+重新认证该账户：
 
 ```bash
 antigravity-claude-proxy accounts
-# Choose "Re-authenticate" for the invalid account
+# 为无效账户选择 "Re-authenticate"
 ```
 
-## 403 Permission Denied
+## 403 权限被拒绝 (Permission Denied)
 
-If you see:
+如果你看到：
 
 ```
 403 permission_error - Permission denied
 ```
 
-This usually means your Google account requires phone number verification:
+这通常意味着你的 Google 账户需要电话号码验证：
 
-1. Download the Antigravity app from https://antigravity.google/download
-2. Log in with the affected account(s)
-3. Complete phone number verification when prompted (or use QR code on Android)
-4. After verification, the account should work properly with the proxy
+1. 从 https://antigravity.google/download 下载 Antigravity 应用
+2. 登录受影响的账户
+3. 根据提示完成电话号码验证（或在 Android 上使用二维码）
+4. 验证后，该账户应能正常配合代理使用
 
-> **Note:** This verification is required by Google and cannot be bypassed through the proxy.
+> **注意：** 此验证是 Google 要求的，无法通过代理绕过。

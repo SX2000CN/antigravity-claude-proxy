@@ -1,27 +1,27 @@
-# Safety, Usage, and Risk Notices
+# 安全、使用及风险声明
 
-## Intended Use
+## 预期用途
 
-- Personal / internal development only
-- Respect internal quotas and data handling policies
-- Not for production services or bypassing intended limits
+- 仅限个人/内部开发使用
+- 遵守内部配额和数据处理政策
+- 不用于生产服务或绕过预期限制
 
-## Not Suitable For
+## 不适用于
 
-- Production application traffic
-- High-volume automated extraction
-- Any use that violates Acceptable Use Policies
+- 生产环境应用流量
+- 大规模自动化提取
+- 任何违反可接受使用政策（AUP）的用途
 
-## Warning (Assumption of Risk)
+## 警告（风险承担）
 
-By using this software, you acknowledge and accept the following:
+使用本软件即表示您承认并接受以下内容：
 
-- **Terms of Service risk**: This approach may violate the Terms of Service of AI model providers (Anthropic, Google, etc.). You are solely responsible for ensuring compliance with all applicable terms and policies.
+- **服务条款风险**：此方法可能违反 AI 模型提供商（Anthropic, Google 等）的服务条款。您需自行负责确保遵守所有适用的条款和政策。
 
-- **Account risk**: Providers may detect this usage pattern and take punitive action, including suspension, permanent ban, or loss of access to paid subscriptions.
+- **账号风险**：提供商可能会检测到此使用模式并采取惩罚措施，包括暂停、永久封禁或取消付费订阅访问权限。
 
-- **No guarantees**: Providers may change APIs, authentication, or policies at any time, which can break this method without notice.
+- **无担保**：提供商可能随时更改 API、身份验证或政策，这可能会在没有通知的情况下导致此方法失效。
 
-- **Assumption of risk**: You assume all legal, financial, and technical risks. The authors and contributors of this project bear no responsibility for any consequences arising from your use.
+- **风险承担**：您承担所有法律、财务和技术风险。本项目的作者和贡献者对因您使用而产生的任何后果不承担任何责任。
 
-**Use at your own risk. Proceed only if you understand and accept these risks.**
+**使用风险自负。仅在您理解并接受这些风险的情况下继续。**

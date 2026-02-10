@@ -1,90 +1,90 @@
-# Advanced Configuration
+# 高级配置 (Advanced Configuration)
 
-While most users can use the default settings, you can tune the proxy behavior via the **Settings → Server** tab in the WebUI or by creating a `config.json` file.
+虽然大多数用户可以使用默认设置，但你也可以通过 WebUI 中的 **Settings → Server** 选项卡或创建一个 `config.json` 文件来调整代理行为。
 
-## Environment Variables
+## 环境变量 (Environment Variables)
 
-The proxy supports the following environment variables:
+代理支持以下环境变量：
 
-| Variable | Description | Default |
+| 变量 | 描述 | 默认值 |
 |----------|-------------|---------|
-| `PORT` | Server port | `8080` |
-| `HOST` | Bind address | `0.0.0.0` |
-| `HTTP_PROXY` | Route outbound requests through a proxy | - |
-| `HTTPS_PROXY` | Same as HTTP_PROXY (for HTTPS requests) | - |
-| `API_KEY` | Protect `/v1/*` API endpoints | - |
-| `WEBUI_PASSWORD` | Password-protect the web dashboard | - |
-| `DEBUG` | Enable debug logging (`true`/`false`) | `false` |
-| `DEV_MODE` | Enable developer mode (`true`/`false`) | `false` |
-| `FALLBACK` | Enable model fallback (`true`/`false`) | `false` |
+| `PORT` | 服务器端口 | `8080` |
+| `HOST` | 绑定地址 | `0.0.0.0` |
+| `HTTP_PROXY` | 通过代理路由出站请求 | - |
+| `HTTPS_PROXY` | 同 HTTP_PROXY (用于 HTTPS 请求) | - |
+| `API_KEY` | 保护 `/v1/*` API 端点 | - |
+| `WEBUI_PASSWORD` | 密码保护 Web 仪表盘 | - |
+| `DEBUG` | 启用调试日志 (`true`/`false`) | `false` |
+| `DEV_MODE` | 启用开发者模式 (`true`/`false`) | `false` |
+| `FALLBACK` | 启用模型回退 (`true`/`false`) | `false` |
 
-### Setting Environment Variables
+### 设置环境变量
 
-#### Inline (single command)
+#### 内联 (单次命令)
 
-Set variables for just one command. Works on macOS, Linux, and Windows with Git Bash/WSL:
+仅为一次命令设置变量。适用于 macOS、Linux 以及带有 Git Bash/WSL 的 Windows：
 
 ```bash
 PORT=3000 HTTP_PROXY=http://proxy:8080 npm start
 ```
 
-#### macOS / Linux (persistent)
+#### macOS / Linux (持久化)
 
-Add to your shell profile (`~/.zshrc` or `~/.bashrc`):
+添加到你的 shell 配置文件 (`~/.zshrc` 或 `~/.bashrc`)：
 
 ```bash
 export PORT=3000
 export HTTP_PROXY=http://proxy:8080
 ```
 
-Then reload: `source ~/.zshrc`
+然后重新加载：`source ~/.zshrc`
 
-#### Windows Command Prompt (persistent)
+#### Windows Command Prompt (持久化)
 
 ```cmd
 setx PORT 3000
 setx HTTP_PROXY http://proxy:8080
 ```
 
-Restart your terminal for changes to take effect.
+重启终端以使更改生效。
 
-#### Windows PowerShell (persistent)
+#### Windows PowerShell (持久化)
 
 ```powershell
 [Environment]::SetEnvironmentVariable("PORT", "3000", "User")
 [Environment]::SetEnvironmentVariable("HTTP_PROXY", "http://proxy:8080", "User")
 ```
 
-Restart your terminal for changes to take effect.
+重启终端以使更改生效。
 
-### HTTP Proxy Support
+### HTTP 代理支持
 
-If you're behind a corporate firewall or VPN, you can route all outbound API requests through a proxy server:
+如果你在公司防火墙或 VPN 后面，你可以通过代理服务器路由所有出站 API 请求：
 
 ```bash
-# Route through a local proxy (e.g., for debugging with mitmproxy)
+# 通过本地代理路由 (例如，用于使用 mitmproxy 调试)
 HTTP_PROXY=http://127.0.0.1:8888 npm start
 
-# Route through a corporate proxy
+# 通过公司代理路由
 HTTP_PROXY=http://proxy.company.com:3128 npm start
 
-# With authentication
+# 带认证的代理
 HTTP_PROXY=http://user:password@proxy.company.com:3128 npm start
 ```
 
-The proxy supports `http_proxy`, `HTTP_PROXY`, `https_proxy`, and `HTTPS_PROXY` (case-insensitive).
+代理支持 `http_proxy`, `HTTP_PROXY`, `https_proxy`, 和 `HTTPS_PROXY` (不区分大小写)。
 
-## Configurable Options
+## 可配置选项
 
-- **API Key Authentication**: Protect `/v1/*` API endpoints with `API_KEY` env var or `apiKey` in config.
-- **WebUI Password**: Secure your dashboard with `WEBUI_PASSWORD` env var or in config.
-- **Custom Port**: Change the default `8080` port.
-- **Retry Logic**: Configure `maxRetries`, `retryBaseMs`, and `retryMaxMs`.
-- **Rate Limit Handling**: Comprehensive rate limit detection from headers and error messages with intelligent retry-after parsing.
-- **Load Balancing**: Adjust `defaultCooldownMs` and `maxWaitBeforeErrorMs`.
-- **Persistence**: Enable `persistTokenCache` to save OAuth sessions across restarts.
-- **Max Accounts**: Set `maxAccounts` (1-100) to limit the number of Google accounts. Default: 10.
-- **Quota Threshold**: Set `globalQuotaThreshold` (0-0.99) to switch accounts before quota drops below a minimum level. Supports per-account and per-model overrides.
-- **Endpoint Fallback**: Automatic 403/404 endpoint fallback for API compatibility.
+- **API Key 认证**：使用 `API_KEY` 环境变量或配置中的 `apiKey` 保护 `/v1/*` API 端点。
+- **WebUI 密码**：使用 `WEBUI_PASSWORD` 环境变量或配置保护你的仪表盘。
+- **自定义端口**：更改默认的 `8080` 端口。
+- **重试逻辑**：配置 `maxRetries`, `retryBaseMs`, 和 `retryMaxMs`。
+- **速率限制处理**：从头部和错误消息中进行全面的速率限制检测，支持智能的 retry-after 解析。
+- **负载均衡**：调整 `defaultCooldownMs` 和 `maxWaitBeforeErrorMs`。
+- **持久化**：启用 `persistTokenCache` 以在重启后保存 OAuth 会话。
+- **最大账户数**：设置 `maxAccounts` (1-100) 以限制 Google 账户的数量。默认值：10。
+- **配额阈值**：设置 `globalQuotaThreshold` (0-0.99) 以在配额降至最低水平之前切换账户。支持每账户和每模型覆盖。
+- **端点回退**：自动 403/404 端点回退以实现 API 兼容性。
 
-Refer to `config.example.json` for a complete list of fields and documentation.
+有关字段和文档的完整列表，请参阅 `config.example.json`。

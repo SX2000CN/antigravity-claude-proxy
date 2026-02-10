@@ -1,20 +1,20 @@
-# Web Management Console
+# Web 管理控制台
 
-The proxy includes a built-in, modern web interface for real-time monitoring and configuration. Access the console at: `http://localhost:8080` (default port).
+代理包含一个内置的、现代化的 Web 界面，用于实时监控和配置。访问控制台：`http://localhost:8080`（默认端口）。
 
 ![Antigravity Console](../images/webui-dashboard.png)
 
-## Key Features
+## 主要功能
 
-- **Real-time Dashboard**: Monitor request volume, active accounts, model health, and subscription tier distribution.
-- **Visual Model Quota**: Track per-model usage and next reset times with color-coded progress indicators and draggable per-account threshold markers.
-- **Account Management**: Add/remove Google accounts via OAuth, view subscription tiers (Free/Pro/Ultra), quota status, and per-account threshold settings.
-- **Manual OAuth Mode**: Add accounts on headless servers by copying the OAuth URL and pasting the authorization code.
-- **Claude CLI Configuration**: Edit your `~/.claude/settings.json` directly from the browser.
-- **Persistent History**: Tracks request volume by model family for 30 days, persisting across server restarts.
-- **Time Range Filtering**: Analyze usage trends over 1H, 6H, 24H, 7D, or All Time periods.
-- **Smart Analysis**: Auto-select top 5 most used models or toggle between Family/Model views.
-- **Live Logs**: Stream server logs with level-based filtering and search.
-- **Quota Protection**: Set global or per-account minimum quota thresholds to proactively switch accounts before quota runs out.
-- **Advanced Tuning**: Configure retries, timeouts, and debug mode on the fly.
-- **Multi-language Interface**: Full support for English, Chinese (中文), Indonesian (Bahasa), Portuguese (PT-BR), and Turkish (Türkçe).
+- **实时仪表盘**：监控请求量、活跃账户、模型健康状况和订阅层级分布。
+- **可视化模型配额**：通过颜色编码的进度指示器和可拖动的每账户阈值标记，跟踪每模型的具体使用情况和下次重置时间。
+- **账户管理**：通过 OAuth 添加/移除 Google 账户，查看订阅层级 (Free/Pro/Ultra)、配额状态和每账户阈值设置。
+- **手动 OAuth 模式**：通过复制 OAuth URL 并粘贴授权码，在无头服务器 (headless servers) 上添加账户。
+- **Claude CLI 配置**：直接从浏览器编辑你的 `~/.claude/settings.json`。
+- **持久化历史记录**：按模型系列跟踪 30 天的请求量，并在服务器重启后保留数据。
+- **时间范围过滤**：分析 1小时、6小时、24小时、7天或所有时间的用量趋势。
+- **智能分析**：自动选择前 5 个最常用的模型，或在系列/模型视图之间切换。
+- **实时日志**：流式传输服务器日志，支持基于级别的过滤和搜索。
+- **配额保护**：设置全局或每账户的最低配额阈值，以便在配额耗尽前主动切换账户。
+- **高级调优**：动态配置重试、超时和调试模式。
+- **多语言界面**：完全支持英语、中文、印度尼西亚语 (Bahasa)、葡萄牙语 (PT-BR) 和土耳其语 (Türkçe)。

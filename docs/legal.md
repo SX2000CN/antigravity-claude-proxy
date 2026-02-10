@@ -1,9 +1,9 @@
-# Legal
+# 法律声明
 
-- **Not affiliated with Google or Anthropic.** This is an independent open-source project and is not endorsed by, sponsored by, or affiliated with Google LLC or Anthropic PBC.
+- **不隶属于 Google 或 Anthropic。** 这是一个独立的开源项目，未得到 Google LLC 或 Anthropic PBC 的认可、赞助或关联。
 
-- "Antigravity", "Gemini", "Google Cloud", and "Google" are trademarks of Google LLC.
+- "Antigravity"、"Gemini"、"Google Cloud" 和 "Google" 是 Google LLC 的商标。
 
-- "Claude" and "Anthropic" are trademarks of Anthropic PBC.
+- "Claude" 和 "Anthropic" 是 Anthropic PBC 的商标。
 
-- Software is provided "as is", without warranty. You are responsible for complying with all applicable Terms of Service and Acceptable Use Policies.
+- 软件按“原样”提供，不提供任何保证。你有责任遵守所有适用的服务条款和可接受使用政策。

@@ -1,20 +1,20 @@
-# Using with OpenClaw / ClawdBot
+# 与 OpenClaw / ClawdBot 一起使用
 
-[OpenClaw](https://docs.openclaw.ai/) (formerly ClawdBot/Moltbot) is an AI agent gateway that connects to messaging apps like Telegram, WhatsApp, Discord, Slack, and iMessage. You can configure it to use this proxy for Claude and Gemini models.
+[OpenClaw](https://docs.openclaw.ai/)（前身为 ClawdBot/Moltbot）是一个 AI 代理网关，可连接 Telegram、WhatsApp、Discord、Slack 和 iMessage 等消息应用。你可以将其配置为使用此代理来访问 Claude 和 Gemini 模型。
 
-## Prerequisites
+## 先决条件
 
-- OpenClaw installed (`npm install -g openclaw@latest`)
-- Antigravity Claude Proxy running on port 8080
-- At least one Google account linked to the proxy
+- 已安装 OpenClaw (`npm install -g openclaw@latest`)
+- Antigravity Claude Proxy 正在运行（端口 8080）
+- 至少有一个 Google 账号已链接到代理
 
-## Configure OpenClaw
+## 配置 OpenClaw
 
-Edit your OpenClaw config file at:
+编辑你的 OpenClaw 配置文件：
 - **macOS/Linux**: `~/.openclaw/openclaw.json`
 - **Windows**: `%USERPROFILE%\.openclaw\openclaw.json`
 
-Add the following configuration:
+添加以下配置：
 
 ```json
 {
@@ -89,71 +89,71 @@ Add the following configuration:
 }
 ```
 
-> **Important**: Use `127.0.0.1` instead of `localhost` in the `baseUrl`. This ensures the connection stays on the loopback interface. If you're running on a VPS and accidentally start the proxy bound to `0.0.0.0`, using `localhost` in your client config could still work but `127.0.0.1` makes the intent explicit and avoids potential DNS resolution issues.
+> **重要提示**：在 `baseUrl` 中使用 `127.0.0.1` 而不是 `localhost`。这可以确保连接保持在环回接口上。如果你在 VPS 上运行，并且意外启动了绑定到 `0.0.0.0` 的代理，在客户端配置中使用 `localhost` 可能仍然有效，但 `127.0.0.1` 明确了意图并避免了潜在的 DNS 解析问题。
 
-## Start Both Services
+## 启动两个服务
 
 ```bash
-# Terminal 1: Start the proxy (binds to localhost only by default)
+# 终端 1：启动代理（默认仅绑定到 localhost）
 antigravity-claude-proxy start
 
-# Terminal 2: Start OpenClaw gateway
+# 终端 2：启动 OpenClaw 网关
 openclaw gateway
 ```
 
-## Verify Configuration
+## 验证配置
 
 ```bash
-# Check available models
+# 检查可用模型
 openclaw models list
 
-# Check gateway status
+# 检查网关状态
 openclaw status
 ```
 
-You should see models prefixed with `antigravity-proxy/` in the list.
+你应该在列表中看到以 `antigravity-proxy/` 为前缀的模型。
 
-## Switch Models
+## 切换模型
 
-To change the default model:
+要更改默认模型：
 
 ```bash
 openclaw models set antigravity-proxy/claude-opus-4-5-thinking
 ```
 
-Or edit the `model.primary` field in your config file.
+或者编辑配置文件中的 `model.primary` 字段。
 
-## Troubleshooting
+## 故障排除
 
-### Connection Refused
+### 连接被拒绝 (Connection Refused)
 
-Make sure the proxy is running before starting OpenClaw:
+在启动 OpenClaw 之前，请确保代理正在运行：
 ```bash
 curl http://127.0.0.1:8080/health
 ```
 
-### Models Not Showing
+### 模型未显示
 
-1. Verify the config file is valid JSON
-2. Check that `mode` is set to `"merge"` (not `"replace"` unless you want to override all built-in models)
-3. Restart the OpenClaw gateway after config changes
+1. 验证配置文件是否为有效的 JSON
+2. 检查 `mode` 是否设置为 `"merge"`（不要设置为 `"replace"`，除非你想覆盖所有内置模型）
+3. 更改配置后重启 OpenClaw 网关
 
-### VPS Security
+### VPS 安全
 
-If running on a VPS, ensure the proxy only binds to localhost:
+如果在 VPS 上运行，请确保代理仅绑定到 localhost：
 ```bash
-# Default binds to 0.0.0.0 (all interfaces) - exposed to network!
+# 默认绑定到 0.0.0.0（所有接口）- 暴露在网络中！
 antigravity-claude-proxy start
 
-# Explicitly bind to localhost only (recommended for VPS)
+# 显式绑定到 localhost（VPS 推荐）
 HOST=127.0.0.1 antigravity-claude-proxy start
 ```
 
-By default, the proxy binds to `0.0.0.0` which exposes it to all network interfaces. On a VPS, always use `HOST=127.0.0.1` to restrict access to localhost only, or ensure you have proper authentication (`API_KEY` env var) and firewall rules in place.
+默认情况下，代理绑定到 `0.0.0.0`，这会将其暴露给所有网络接口。在 VPS 上，务必使用 `HOST=127.0.0.1` 将访问限制为仅限 localhost，或者确保你有适当的身份验证（`API_KEY` 环境变量）和防火墙规则。
 
-## Further Reading
+## 延伸阅读
 
-- [OpenClaw Documentation](https://docs.openclaw.ai/)
-- [OpenClaw Configuration Reference](https://docs.openclaw.ai/gateway/configuration)
-- [Proxy Load Balancing](./load-balancing.md)
-- [Proxy Configuration](./configuration.md)
+- [OpenClaw 文档](https://docs.openclaw.ai/)
+- [OpenClaw 配置参考](https://docs.openclaw.ai/gateway/configuration)
+- [代理负载均衡](./load-balancing.md)
+- [代理配置](./configuration.md)

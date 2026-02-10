@@ -1,24 +1,24 @@
-# Testing
+# 测试 (Testing)
 
-Run the test suite (requires server running):
+运行测试套件（需要服务器正在运行）：
 
 ```bash
-# Start server in one terminal
+# 在一个终端启动服务器
 npm start
 
-# Run tests in another terminal
+# 在另一个终端运行测试
 npm test
 ```
 
-Individual tests:
+单独运行测试：
 
 ```bash
-npm run test:signatures    # Thinking signatures
-npm run test:multiturn     # Multi-turn with tools
-npm run test:streaming     # Streaming SSE events
-npm run test:interleaved   # Interleaved thinking
-npm run test:images        # Image processing
-npm run test:caching       # Prompt caching
-npm run test:strategies    # Account selection strategies
-npm run test:cache-control # Cache control field stripping
+npm run test:signatures    # Thinking signatures (思维签名)
+npm run test:multiturn     # Multi-turn with tools (多轮对话与工具)
+npm run test:streaming     # Streaming SSE events (流式 SSE 事件)
+npm run test:interleaved   # Interleaved thinking (交错思维)
+npm run test:images        # Image processing (图像处理)
+npm run test:caching       # Prompt caching (Prompt 缓存)
+npm run test:strategies    # Account selection strategies (账户选择策略)
+npm run test:cache-control # Cache control field stripping (缓存控制字段剥离)
 ```

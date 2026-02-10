@@ -1,9 +1,9 @@
-# API Endpoints
+# API 端点
 
-| Endpoint          | Method | Description                                                           |
-| ----------------- | ------ | --------------------------------------------------------------------- |
-| `/health`         | GET    | Health check                                                          |
-| `/account-limits` | GET    | Account status and quota limits (add `?format=table` for ASCII table) |
-| `/v1/messages`    | POST   | Anthropic Messages API                                                |
-| `/v1/models`      | GET    | List available models                                                 |
-| `/refresh-token`  | POST   | Force token refresh                                                   |
+| 端点               | 方法   | 描述                                                                 |
+| ----------------- | ------ | -------------------------------------------------------------------- |
+| `/health`         | GET    | 健康检查                                                             |
+| `/account-limits` | GET    | 账户状态和配额限制（添加 `?format=table` 以获取 ASCII 表格）           |
+| `/v1/messages`    | POST   | Anthropic Messages API                                               |
+| `/v1/models`      | GET    | 列出可用模型                                                         |
+| `/refresh-token`  | POST   | 强制刷新令牌                                                         |
